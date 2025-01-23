@@ -51,6 +51,8 @@ void init_gpio(void);
 char scan_keypad(void);
 uint32_t matrix_rgb(double r, double g, double b);
 void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
+void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) ;
+void arco_iris_dinamico(PIO pio, uint sm);
 
 void handle_key_press(char key) {
     switch (key) {
@@ -73,8 +75,9 @@ void handle_key_press(char key) {
             //animação 6
             break;
         case '6':
-            //animação 7
-            break;
+            printf("Iniciando arco-íris dinâmico...\n");
+            arco_iris_dinamico(pio, sm);
+         break;
         case 'A':
            //Desligar todos os LEDs
             break;
@@ -168,5 +171,45 @@ void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b
         int posicao_fisica = mapa_leds[i]; // Aplica o mapeamento
         uint32_t valor_led = matrix_rgb(desenho[posicao_fisica] * r, desenho[posicao_fisica] * g, desenho[posicao_fisica] * b);
         pio_sm_put_blocking(pio, sm, valor_led);
+    }
+}
+
+void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
+    int i = (int)(h * 6);
+    float f = h * 6 - i;
+    float p = v * (1 - s);
+    float q = v * (1 - f * s);
+    float t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+        case 0: *r = v; *g = t; *b = p; break;
+        case 1: *r = q; *g = v; *b = p; break;
+        case 2: *r = p; *g = v; *b = t; break;
+        case 3: *r = p; *g = q; *b = v; break;
+        case 4: *r = t; *g = p; *b = v; break;
+        case 5: *r = v; *g = p; *b = q; break;
+    }
+}
+
+void arco_iris_dinamico(PIO pio, uint sm) {
+    float hue_base = 0.0; // Matiz inicial
+    float step = 1.0 / NUM_PIXELS; // Diferença de matiz entre os LEDs
+
+    while (true) {
+        for (int i = 0; i < NUM_PIXELS; i++) {
+            int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
+            float hue = fmod(hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
+            
+            // Converter HSV para RGB
+            float r, g, b;
+            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
+
+            // Definir cor do LED
+            uint32_t cor = matrix_rgb(r, g, b);
+            pio_sm_put_blocking(pio, sm, cor);
+        }
+
+        hue_base = fmod(hue_base + 0.01, 1.0); // Incrementar matiz base
+        sleep_ms(50); // Atraso para suavizar a transição
     }
 }
