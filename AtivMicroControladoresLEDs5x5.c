@@ -123,7 +123,7 @@ void animacao1(){
     desenho_pio(desenho5, pio, sm, 1.0, 0.0, 1.0);
     activate_buzzer(100, 700);
     sleep_ms(300);
-    desenho_pio(desenho6, pio, sm, 0.0, 1.0, 1.0);
+    desenho_pio(desenho6, pio, sm, 1.0, 0.0, 0.0);
     activate_buzzer(200, 300);
     sleep_ms(700);
     desenho_pio(desenho7, pio, sm, 0.0, 1.0, 1.0);
@@ -196,7 +196,7 @@ int main() {
     // Loop principal
     while (true) {
         char key = scan_keypad();
-        
+
         if (key != 0 && key != last_key) {
             printf("Tecla pressionada: %c\n", key);
             handle_key_press(key);
