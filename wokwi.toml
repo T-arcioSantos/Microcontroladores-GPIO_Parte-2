@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/AtivMicroControladoresLEDs5x5.uf2'
+elf = 'build/AtivMicroControladoresLEDs5x5.elf'
