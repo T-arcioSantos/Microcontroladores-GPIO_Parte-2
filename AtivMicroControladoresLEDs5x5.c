@@ -47,15 +47,95 @@ double ledsLIGADOS[25] = {
     1.0, 1.0, 1.0, 1.0, 1.0
 };
 
+double ledsDesligados[25] = {0.0};
+
 void init_gpio(void);
 char scan_keypad(void);
 uint32_t matrix_rgb(double r, double g, double b);
 void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
+void activate_buzzer(uint32_t frequency, uint32_t duration_ms);
+
+// ANIMAÇÃO 1 ////////////////////////
+// Padrão original
+double desenho[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0, 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+// Novo padrão para quando o botão for pressionado
+double desenho2[25] = { 
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double desenho3[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+double desenho4[25] = { 
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+double desenho5[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+
+double desenho6[25] = { 
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+double desenho7[25] = { 
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0
+};
+
+void animacao1(){
+    desenho_pio(desenho2, pio, sm, 1.0, 0.0, 0.0); // Exibe o padrão 2 em vermelho
+    sleep_ms(1000);
+    desenho_pio(desenho3, pio, sm, 0.0, 0.0, 1.0);
+    sleep_ms(1000);
+    desenho_pio(desenho4, pio, sm, 1.0, 1.0, 0.0);
+    sleep_ms(1000);
+    desenho_pio(desenho5, pio, sm, 1.0, 0.0, 1.0);
+    activate_buzzer(100, 700);
+    sleep_ms(300);
+    desenho_pio(desenho6, pio, sm, 0.0, 1.0, 1.0);
+    activate_buzzer(200, 300);
+    sleep_ms(700);
+    desenho_pio(desenho7, pio, sm, 0.0, 1.0, 1.0);
+    sleep_ms(1000);
+    desenho_pio(ledsDesligados, pio, sm, 1.0, 1.0, 1.0); 
+    sleep_ms(1000);
+};
 
 void handle_key_press(char key) {
     switch (key) {
         case '0':
-            //animação 1
+            animacao1();//animação 1
             break;
         case '1':
             //animação 2
@@ -111,14 +191,21 @@ int main() {
     printf("Iniciando...\n");
 
     char last_key = 0;
+    int key_released = 1;
 
     // Loop principal
     while (true) {
         char key = scan_keypad();
+        
         if (key != 0 && key != last_key) {
             printf("Tecla pressionada: %c\n", key);
             handle_key_press(key);
             last_key = key;
+            key_released = 0;
+        }
+        else {
+            key_released = 1;
+            last_key = 0;
         }
         sleep_ms(100); // Aguarda 100 ms
     }
@@ -168,5 +255,18 @@ void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b
         int posicao_fisica = mapa_leds[i]; // Aplica o mapeamento
         uint32_t valor_led = matrix_rgb(desenho[posicao_fisica] * r, desenho[posicao_fisica] * g, desenho[posicao_fisica] * b);
         pio_sm_put_blocking(pio, sm, valor_led);
+    }
+}
+
+void activate_buzzer(uint32_t frequency, uint32_t duration_ms) {
+    uint32_t period_us = 1000000 / frequency; // Calcula o período em microssegundos
+    uint32_t half_period_us = period_us / 2; // Calcula metade do período para o ciclo ativo/inativo
+
+    uint32_t start_time = time_us_64();
+    while (time_us_64() - start_time < duration_ms * 1000) {
+        gpio_put(BUZZER_PIN, 1); // Liga o buzzer
+        busy_wait_us(half_period_us); // Espera metade do período
+        gpio_put(BUZZER_PIN, 0); // Desliga o buzzer
+        busy_wait_us(half_period_us); // Espera a outra metade do período
     }
 }
