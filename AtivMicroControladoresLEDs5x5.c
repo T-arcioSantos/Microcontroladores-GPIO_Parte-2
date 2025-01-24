@@ -49,53 +49,46 @@ double ledsLIGADOS[25] = {
 
 double ledsDesligados[25] = {0.0};
 
-void init_gpio(void);
-char scan_keypad(void);
-uint32_t matrix_rgb(double r, double g, double b);
-void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
-void activate_buzzer(uint32_t frequency, uint32_t duration_ms);
-
-// ANIMAÇÃO 1 ////////////////////////
-// Padrão original
-double desenho[25] = { 
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0, 
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0
+// Números de 1 a 5
+double numero1[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
 };
 
-// Novo padrão para quando o botão for pressionado
-double desenho2[25] = { 
-    1.0, 1.0, 1.0, 1.0, 1.0,
+double numero2[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
     1.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
     1.0, 1.0, 1.0, 1.0, 1.0
 };
 
-double desenho3[25] = { 
-    0.0, 0.0, 0.0, 0.0, 0.0,
+double numero3[25] = {
     0.0, 1.0, 1.0, 1.0, 0.0,
-    0.0, 1.0, 0.0, 1.0, 0.0,
-    0.0, 1.0, 1.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0
-};
-double desenho4[25] = { 
-    1.0, 1.0, 1.0, 1.0, 1.0,
     1.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-double desenho5[25] = { 
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 1.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
     1.0, 0.0, 0.0, 0.0, 1.0,
     0.0, 1.0, 1.0, 1.0, 0.0
 };
 
+double numero4[25] = {
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 0.0, 0.0, 1.0, 0.0
+};
+
+double numero5[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 0.0
+};
 
 double desenho6[25] = { 
     0.0, 1.0, 0.0, 1.0, 0.0,
@@ -105,81 +98,17 @@ double desenho6[25] = {
     0.0, 0.0, 1.0, 0.0, 0.0
 };
 
-double desenho7[25] = { 
-    0.0, 0.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    0.0, 1.0, 1.0, 1.0, 0.0,
-    0.0, 1.0, 0.0, 1.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 1.0
-};
+// Array de ponteiros para os números
+double* numeros[] = {numero5, numero4, numero3, numero2, numero1};
 
-void animacao1(){
-    desenho_pio(desenho2, pio, sm, 1.0, 0.0, 0.0); // Exibe o padrão 2 em vermelho
-    sleep_ms(1000);
-    desenho_pio(desenho3, pio, sm, 0.0, 0.0, 1.0);
-    sleep_ms(1000);
-    desenho_pio(desenho4, pio, sm, 1.0, 1.0, 0.0);
-    sleep_ms(1000);
-    desenho_pio(desenho5, pio, sm, 1.0, 0.0, 1.0);
-    activate_buzzer(100, 700);
-    sleep_ms(300);
-    desenho_pio(desenho6, pio, sm, 1.0, 0.0, 0.0);
-    activate_buzzer(200, 300);
-    sleep_ms(700);
-    desenho_pio(desenho7, pio, sm, 0.0, 1.0, 1.0);
-    sleep_ms(1000);
-    desenho_pio(ledsDesligados, pio, sm, 1.0, 1.0, 1.0); 
-    sleep_ms(1000);
-};
+void init_gpio(void);
+char scan_keypad(void);
+uint32_t matrix_rgb(double r, double g, double b);
+void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
+void activate_buzzer(uint32_t frequency, uint32_t duration_ms);
+void handle_key_press(char key);
+void animacao1();
 
-void handle_key_press(char key) {
-    switch (key) {
-        case '0':
-            animacao1();//animação 1
-            break;
-        case '1':
-            //animação 2
-            break;
-        case '2':
-            //animação 3
-            break;
-        case '3':
-            //animação 4
-            break;            
-        case '4':
-            //animação 5
-            break;         
-        case '5':
-            //animação 6
-            break;
-        case '6':
-            //animação 7
-            break;
-        case 'A':
-           //Desligar todos os LEDs
-            break;
-        case 'B':
-            //Ligar todos os LEDs na cor azul, 100% de intensidade
-            break;
-        case 'C':
-            //Ligar todos os LEDs na cor vermelha, 80% de intensidade
-            break;
-        case 'D':
-            //Ligar todos os LEDs na cor verde, 50% de intensidade
-            break;
-        case '#':
-            //Ligar todos os LEDs na cor branca, 20% de intensidade
-            break;
-        case '*':
-            //reboot
-            printf("Reiniciando...\n");
-            reset_usb_boot(0, 0);
-            break;
-        default:
-            printf("Tecla não atribuída: %c\n", key);
-            break;
-    }
-}
 // Função principal
 int main() {
     sm = pio_claim_unused_sm(pio, true);
@@ -230,6 +159,55 @@ void init_gpio() {
     gpio_put(BUZZER_PIN, 0); 
 }
 
+void handle_key_press(char key) {
+    switch (key) {
+        case '0':
+            animacao1();//animação 1
+            break;
+        case '1':
+            //animação 2
+            break;
+        case '2':
+            //animação 3
+            break;
+        case '3':
+            //animação 4
+            break;            
+        case '4':
+            //animação 5
+            break;         
+        case '5':
+            //animação 6
+            break;
+        case '6':
+            //animação 7
+            break;
+        case 'A':
+           //Desligar todos os LEDs
+            break;
+        case 'B':
+            //Ligar todos os LEDs na cor azul, 100% de intensidade
+            break;
+        case 'C':
+            //Ligar todos os LEDs na cor vermelha, 80% de intensidade
+            break;
+        case 'D':
+            //Ligar todos os LEDs na cor verde, 50% de intensidade
+            break;
+        case '#':
+            //Ligar todos os LEDs na cor branca, 20% de intensidade
+            break;
+        case '*':
+            //reboot
+            printf("Reiniciando...\n");
+            reset_usb_boot(0, 0);
+            break;
+        default:
+            printf("Tecla não atribuída: %c\n", key);
+            break;
+    }
+}
+
 char scan_keypad() {
     for (int row = 0; row < ROWS; row++) {
         gpio_put(row_pins[row], 0); 
@@ -270,3 +248,17 @@ void activate_buzzer(uint32_t frequency, uint32_t duration_ms) {
         busy_wait_us(half_period_us); // Espera a outra metade do período
     }
 }
+
+// ANIMAÇÕES ////////////////////
+
+// -- animação 1 -- //
+void animacao1(){
+   // Contagem regressiva usando loop
+    for(int i = 0; i < 5; i++) {
+        desenho_pio(numeros[i], pio, sm, 1.0, 0.0, 0.0);
+        sleep_ms(1000);
+    }
+    desenho_pio(desenho6, pio, sm, 1.0, 0.0, 0.0);
+    activate_buzzer(200, 300);
+    sleep_ms(700);
+};
