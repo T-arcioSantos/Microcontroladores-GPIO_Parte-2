@@ -78,6 +78,15 @@ void handle_key_press(char key) {
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico(pio, sm);
          break;
+        case '7':
+            //animação 7
+            break;
+        case '8':
+            //animação 8
+            break;
+        case '9':
+            //animação 9
+            break;
         case 'A':
            //Desligar todos os LEDs
             break;
