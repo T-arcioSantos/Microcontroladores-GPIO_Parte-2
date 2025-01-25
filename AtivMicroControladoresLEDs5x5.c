@@ -459,15 +459,16 @@ void xadrez(PIO pio, uint sm) {
 
     char current_key = 0;
     char last_key = '7'; // Assume que '7' é a tecla para iniciar a animação
+    int num_repeticoes = 3;
 
-    while (true) {
+    while (num_repeticoes > 0) {
         // Verifica se outra tecla foi pressionada
         current_key = scan_keypad();
         if (current_key != 0 && current_key != last_key) {
             printf("Tecla pressionada: %c. Encerrando animação.\n", current_key);
             break; // Sai do loop ao detectar outra tecla
         }
-
+        printf("Repetições restantes: %d\n", num_repeticoes);
         // Etapa 1: Alternar entre vermelho e branco
         desenho_pio(vermelho, pio, sm, 1.0, 0.0, 0.0); // Vermelho
         sleep_ms(200);
@@ -505,6 +506,7 @@ void xadrez(PIO pio, uint sm) {
             desenho_pio((i % 2 == 0) ? padrao1 : padrao2, pio, sm, 1.0, 1.0, 1.0); // Branco
             sleep_ms(200);
         }
+        num_repeticoes--;
     }
 
     // Finaliza apagando os LEDs
