@@ -61,6 +61,7 @@ void piscar_X(PIO pio, uint sm);
 void handle_key_press(char key) {
     switch (key) {
         case '0':
+            //animação 1
             double desenho[25] = {0};
             desenho[12] = 1.0; // Apenas o LED central
             desenho_pio(desenho, pio, sm, 1.0, 1.0, 1.0); // Cor branca
@@ -73,15 +74,20 @@ void handle_key_press(char key) {
             //animação 3
             break;
         case '3':
+            //animação 4
             animacao_quadrado(pio, sm);
             break;            
         case '4':
+            //animação 5
             piscar_X(pio, sm);
             break;         
         case '5':
+            //animação 6
+            break;
+        case '6':
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico(pio, sm);
-         break;
+            break;
         case 'A':
            //Desligar todos os LEDs
             break;
@@ -92,9 +98,11 @@ void handle_key_press(char key) {
             //Ligar todos os LEDs na cor vermelha, 80% de intensidade
             break;
         case 'D':
+            //Ligar todos os LEDs na cor verde, 50% de intensidade
             ligar_leds_verde(pio, sm);
             break;
         case '#':
+            //Ligar todos os LEDs na cor branca, 20% de intensidade
             ligar_leds_branco(pio, sm);
             break;
         case '*':
@@ -204,6 +212,7 @@ void arco_iris_dinamico(PIO pio, uint sm) {
         for (int i = 0; i < NUM_PIXELS; i++) {
             int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
             float hue = fmod(hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
+   
             
             // Converter HSV para RGB
             float r, g, b;
