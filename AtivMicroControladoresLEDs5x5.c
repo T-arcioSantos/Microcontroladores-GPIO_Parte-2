@@ -87,7 +87,7 @@ void handle_key_press(char key) {
         case '6':
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico(pio, sm);
-            break;
+        break;
         case '7':
             //animação 7
             break;
@@ -96,6 +96,7 @@ void handle_key_press(char key) {
             break;
         case '9':
             //animação 9
+            break;
         case 'A':
            //Desligar todos os LEDs
             break;
@@ -220,7 +221,6 @@ void arco_iris_dinamico(PIO pio, uint sm) {
         for (int i = 0; i < NUM_PIXELS; i++) {
             int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
             float hue = fmod(hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
-
 
             // Converter HSV para RGB
             float r, g, b;
