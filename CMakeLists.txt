@@ -80,4 +80,3 @@ target_link_libraries(AtivMicroControladoresLEDs5x5
         )
 
 pico_add_extra_outputs(AtivMicroControladoresLEDs5x5)
-
