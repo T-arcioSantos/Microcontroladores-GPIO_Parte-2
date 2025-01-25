@@ -47,10 +47,67 @@ double ledsLIGADOS[25] = {
     1.0, 1.0, 1.0, 1.0, 1.0
 };
 
+double ledsDesligados[25] = {0.0};
+
+// Números de 1 a 5
+double numero1[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double numero2[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double numero3[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double numero4[25] = {
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 0.0, 0.0, 1.0, 0.0
+};
+
+double numero5[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double desenho6[25] = { 
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+// Array de ponteiros para os números
+double* numeros[] = {numero5, numero4, numero3, numero2, numero1};
+
 void init_gpio(void);
 char scan_keypad(void);
 uint32_t matrix_rgb(double r, double g, double b);
 void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
+void activate_buzzer(uint32_t frequency, uint32_t duration_ms);
+void handle_key_press(char key);
+
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) ;
 void arco_iris_dinamico(PIO pio, uint sm);
 void ligar_leds_verde(PIO pio, uint sm);
@@ -58,15 +115,62 @@ void ligar_leds_branco(PIO pio, uint sm);
 void animacao_quadrado(PIO pio, uint sm) ;
 void piscar_X(PIO pio, uint sm);
 void xadrez(PIO pio, uint sm);
+void animacao1();
+
+// Função principal
+int main() {
+    sm = pio_claim_unused_sm(pio, true);
+    offset = pio_add_program(pio, &pio_matrix_program);
+    pio_matrix_program_init(pio, sm, offset, OUT_PIN);
+
+    stdio_init_all();
+    init_gpio();
+    printf("Iniciando...\n");
+
+    char last_key = 0;
+    int key_released = 1;
+
+    // Loop principal
+    while (true) {
+        char key = scan_keypad();
+
+        if (key != 0 && key != last_key) {
+            printf("Tecla pressionada: %c\n", key);
+            handle_key_press(key);
+            last_key = key;
+            key_released = 0;
+        }
+        else {
+            key_released = 1;
+            last_key = 0;
+        }
+        sleep_ms(100); // Aguarda 100 ms
+    }
+}
+
+void init_gpio() {
+   
+    for (int i = 0; i < ROWS; i++) {
+        gpio_init(row_pins[i]);
+        gpio_set_dir(row_pins[i], GPIO_OUT);
+        gpio_put(row_pins[i], 1);
+    }
+
+    for (int i = 0; i < COLS; i++) {
+        gpio_init(col_pins[i]);
+        gpio_set_dir(col_pins[i], GPIO_IN);
+        gpio_pull_up(col_pins[i]);
+    }
+
+    gpio_init(BUZZER_PIN);
+    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
+    gpio_put(BUZZER_PIN, 0); 
+}
 
 void handle_key_press(char key) {
     switch (key) {
         case '0':
-            //animação 1
-            double desenho[25] = {0};
-            desenho[12] = 1.0; // Apenas o LED central
-            desenho_pio(desenho, pio, sm, 1.0, 1.0, 1.0); // Cor branca
-            sleep_ms(1000);
+            animacao1();//animação 1
             break;
         case '1':
             //animação 2
@@ -86,19 +190,20 @@ void handle_key_press(char key) {
             //animação 6
             break;
         case '6':
+            //animação 7
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico(pio, sm);
-        break;
+            break;
         case '7':
-            //animação 7
+            //animação 8
          printf("Iniciando xadrez...\n");
          xadrez(pio, sm);
             break;
         case '8':
-            //animação 8
+            //animação 9
             break;
         case '9':
-            //animação 9
+            //animação 10
             break;
         case 'A':
            //Desligar todos os LEDs
@@ -130,49 +235,6 @@ void handle_key_press(char key) {
     }
 }
 
-// Função principal
-int main() {
-    sm = pio_claim_unused_sm(pio, true);
-    offset = pio_add_program(pio, &pio_matrix_program);
-    pio_matrix_program_init(pio, sm, offset, OUT_PIN);
-
-    stdio_init_all();
-    init_gpio();
-    printf("Iniciando...\n");
-
-    char last_key = 0;
-
-    // Loop principal
-    while (true) {
-        char key = scan_keypad();
-        if (key != 0 && key != last_key) {
-            printf("Tecla pressionada: %c\n", key);
-            handle_key_press(key);
-            last_key = key;
-        }
-        sleep_ms(100); // Aguarda 100 ms
-    }
-}
-
-void init_gpio() {
-   
-    for (int i = 0; i < ROWS; i++) {
-        gpio_init(row_pins[i]);
-        gpio_set_dir(row_pins[i], GPIO_OUT);
-        gpio_put(row_pins[i], 1);
-    }
-
-    for (int i = 0; i < COLS; i++) {
-        gpio_init(col_pins[i]);
-        gpio_set_dir(col_pins[i], GPIO_IN);
-        gpio_pull_up(col_pins[i]);
-    }
-
-    gpio_init(BUZZER_PIN);
-    gpio_set_dir(BUZZER_PIN, GPIO_OUT);
-    gpio_put(BUZZER_PIN, 0); 
-}
-
 char scan_keypad() {
     for (int row = 0; row < ROWS; row++) {
         gpio_put(row_pins[row], 0); 
@@ -201,6 +263,34 @@ void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b
     }
 }
 
+void activate_buzzer(uint32_t frequency, uint32_t duration_ms) {
+    uint32_t period_us = 1000000 / frequency; // Calcula o período em microssegundos
+    uint32_t half_period_us = period_us / 2; // Calcula metade do período para o ciclo ativo/inativo
+
+    uint32_t start_time = time_us_64();
+    while (time_us_64() - start_time < duration_ms * 1000) {
+        gpio_put(BUZZER_PIN, 1); // Liga o buzzer
+        busy_wait_us(half_period_us); // Espera metade do período
+        gpio_put(BUZZER_PIN, 0); // Desliga o buzzer
+        busy_wait_us(half_period_us); // Espera a outra metade do período
+    }
+}
+
+// ANIMAÇÕES ////////////////////
+
+// -- animação 1 -- contagem regressiva e coração Tecla 0 -- //
+void animacao1(){
+   // Contagem regressiva usando loop
+    for(int i = 0; i < 5; i++) {
+        desenho_pio(numeros[i], pio, sm, 1.0, 0.0, 0.0);
+        sleep_ms(1000);
+    }
+    desenho_pio(desenho6, pio, sm, 1.0, 0.0, 0.0);
+    activate_buzzer(200, 300);
+    sleep_ms(900);
+    desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+};
+// -- animação 2 -- Tecla 1 -- arco iris //
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
     int i = (int)(h * 6);
     float f = h * 6 - i;
@@ -240,17 +330,18 @@ void arco_iris_dinamico(PIO pio, uint sm) {
         sleep_ms(50); // Atraso para suavizar a transição
     }
 }
-
+// Tecla D -- ligar todos os LEDs na cor verde na intensidade de 50% //
 void ligar_leds_verde(PIO pio, uint sm) {
     printf("Ligando todos os LEDs na cor verde (50%% de intensidade)...\n");
     desenho_pio(ledsLIGADOS, pio, sm, 0.0, 0.5, 0.0);
 }
-
+// Tecla # -- ligar todos os LEDs na cor branca na intensidade de 20% //
 void ligar_leds_branco(PIO pio, uint sm) {
     printf("Ligando todos os LEDs na cor branca (20%% de intensidade)...\n");
     desenho_pio(ledsLIGADOS, pio, sm, 0.2, 0.2, 0.2);
 }
 
+// -- animação 3 -- Tecla 3 -- quadrado crescendo //
 void animacao_quadrado(PIO pio, uint sm) {
     double desenho[25] = {0};
     printf("Executando animação de quadrado crescendo...\n");
@@ -298,6 +389,7 @@ void animacao_quadrado(PIO pio, uint sm) {
     }
 }
 
+// -- animação 4 -- Tecla 4 -- piscar X //
 void piscar_X(PIO pio, uint sm) {
     double desenho[25] = {0};
 
@@ -343,6 +435,7 @@ void piscar_X(PIO pio, uint sm) {
     desenho_pio(desenho, pio, sm, 0.0, 0.0, 0.0); // Desliga os LEDs
 }
 
+// -- animação 8 -- Tecla 7 -- xadrez //
 void xadrez(PIO pio, uint sm) {
     // Padrão inicial: todos os LEDs na cor vermelha
     double vermelho[25] = {
