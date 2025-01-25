@@ -53,11 +53,19 @@ uint32_t matrix_rgb(double r, double g, double b);
 void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) ;
 void arco_iris_dinamico(PIO pio, uint sm);
+void ligar_leds_verde(PIO pio, uint sm);
+void ligar_leds_branco(PIO pio, uint sm);
+void animacao_quadrado(PIO pio, uint sm) ;
+void piscar_X(PIO pio, uint sm);
 
 void handle_key_press(char key) {
     switch (key) {
         case '0':
             //animação 1
+            double desenho[25] = {0};
+            desenho[12] = 1.0; // Apenas o LED central
+            desenho_pio(desenho, pio, sm, 1.0, 1.0, 1.0); // Cor branca
+            sleep_ms(1000);
             break;
         case '1':
             //animação 2
@@ -67,9 +75,11 @@ void handle_key_press(char key) {
             break;
         case '3':
             //animação 4
+            animacao_quadrado(pio, sm);
             break;            
         case '4':
             //animação 5
+            piscar_X(pio, sm);
             break;         
         case '5':
             //animação 6
@@ -77,7 +87,7 @@ void handle_key_press(char key) {
         case '6':
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico(pio, sm);
-         break;
+        break;
         case '7':
             //animação 7
             break;
@@ -98,9 +108,11 @@ void handle_key_press(char key) {
             break;
         case 'D':
             //Ligar todos os LEDs na cor verde, 50% de intensidade
+            ligar_leds_verde(pio, sm);
             break;
         case '#':
             //Ligar todos os LEDs na cor branca, 20% de intensidade
+            ligar_leds_branco(pio, sm);
             break;
         case '*':
             //reboot
@@ -112,6 +124,7 @@ void handle_key_press(char key) {
             break;
     }
 }
+
 // Função principal
 int main() {
     sm = pio_claim_unused_sm(pio, true);
@@ -208,7 +221,7 @@ void arco_iris_dinamico(PIO pio, uint sm) {
         for (int i = 0; i < NUM_PIXELS; i++) {
             int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
             float hue = fmod(hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
-            
+
             // Converter HSV para RGB
             float r, g, b;
             hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
@@ -221,4 +234,106 @@ void arco_iris_dinamico(PIO pio, uint sm) {
         hue_base = fmod(hue_base + 0.01, 1.0); // Incrementar matiz base
         sleep_ms(50); // Atraso para suavizar a transição
     }
+}
+
+void ligar_leds_verde(PIO pio, uint sm) {
+    printf("Ligando todos os LEDs na cor verde (50%% de intensidade)...\n");
+    desenho_pio(ledsLIGADOS, pio, sm, 0.0, 0.5, 0.0);
+}
+
+void ligar_leds_branco(PIO pio, uint sm) {
+    printf("Ligando todos os LEDs na cor branca (20%% de intensidade)...\n");
+    desenho_pio(ledsLIGADOS, pio, sm, 0.2, 0.2, 0.2);
+}
+
+void animacao_quadrado(PIO pio, uint sm) {
+    double desenho[25] = {0};
+    printf("Executando animação de quadrado crescendo...\n");
+
+    // Camadas do quadrado crescendo
+    int camadas[4][25] = {
+        {12},                                  // Ponto central (primeiro frame)
+        {6, 8, 12, 16, 18},                   // Segundo frame com "X"
+        {0, 4, 20, 24, 2, 10, 14, 22, 6, 8, 16, 18, 12}, // Quadrado maior com "X"
+        {0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24} // Quadrado completo
+    };
+
+    // Cores para cada camada (mudança de cor por frame)
+    float cores[4][3] = {
+        {1.0, 0.0, 0.0}, // Vermelho
+        {0.0, 1.0, 0.0}, // Verde
+        {0.0, 0.0, 1.0}, // Azul
+        {1.0, 1.0, 0.0}  // Amarelo
+    };
+
+    // Executa cada frame
+    for (int frame = 0; frame < 4; frame++) {
+        // Desliga todos os LEDs antes de configurar o próximo frame
+        for (int i = 0; i < NUM_PIXELS; i++) {
+            pio_sm_put_blocking(pio, sm, 0x000000); // Envia o comando para desligar
+        }
+
+        sleep_ms(50); // Adiciona um pequeno delay para sincronização de hardware
+
+        // Zera o array 'desenho'
+        memset(desenho, 0, sizeof(desenho));
+
+        // Configura os LEDs da camada atual
+        for (int i = 0; i < 25; i++) {
+            int idx = camadas[frame][i];
+            if (idx >= 0 && idx < 25) {
+                desenho[idx] = 1.0;
+            }
+        }
+
+        // Atualiza a matriz com a cor correspondente
+        desenho_pio(desenho, pio, sm, cores[frame][0], cores[frame][1], cores[frame][2]);
+
+        sleep_ms(200); // Tempo entre os frames
+    }
+}
+
+void piscar_X(PIO pio, uint sm) {
+    double desenho[25] = {0};
+
+    // Definir o "X" nos LEDs
+    desenho[0] = desenho[4] = desenho[6] = desenho[8] = desenho[12] = desenho[16] = desenho[18] = desenho[20] = desenho[24] = 1.0;
+
+    printf("Transição do X com 10 cores diferentes...\n");
+
+    float cores[10][3] = {
+        {1.0, 0.0, 0.0}, // Vermelho
+        {0.0, 1.0, 0.0}, // Verde
+        {0.0, 0.0, 1.0}, // Azul
+        {1.0, 1.0, 0.0}, // Amarelo
+        {1.0, 0.0, 1.0}, // Magenta
+        {0.0, 1.0, 1.0}, // Ciano
+        {1.0, 0.5, 0.0}, // Laranja
+        {0.5, 0.0, 0.5}, // Roxo
+        {0.5, 0.5, 0.5}, // Cinza
+        {1.0, 1.0, 1.0}  // Branco
+    };
+
+    // Itera pelas cores, criando transições suaves
+    for (int frame = 0; frame < 10; frame++) {
+        float *cor_atual = cores[frame % 10]; // Cor inicial
+        float *cor_proxima = cores[(frame + 1) % 10]; // Próxima cor
+
+        // Transição suave entre as cores
+        for (float t = 0.0; t <= 1.0; t += 0.1) { // 10 passos para a transição
+            float r = cor_atual[0] * (1.0 - t) + cor_proxima[0] * t;
+            float g = cor_atual[1] * (1.0 - t) + cor_proxima[1] * t;
+            float b = cor_atual[2] * (1.0 - t) + cor_proxima[2] * t;
+
+            // Atualiza o desenho com as cores interpoladas
+            desenho_pio(desenho, pio, sm, r, g, b);
+            sleep_ms(50); // Pequeno delay para suavizar a transição
+        }
+    }
+
+    // Apaga o "X" ao final
+    for (int i = 0; i < 25; i++) {
+        desenho[i] = 0.0;
+    }
+    desenho_pio(desenho, pio, sm, 0.0, 0.0, 0.0); // Desliga os LEDs
 }
