@@ -47,30 +47,19 @@ double ledsLIGADOS[25] = {
     1.0, 1.0, 1.0, 1.0, 1.0
 };
 
-double LEDsAzul[25]={
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
 void init_gpio(void);
 char scan_keypad(void);
 uint32_t matrix_rgb(double r, double g, double b);
-
 void desenho_pio(double *desenho, PIO pio, uint sm, double r, double g, double b);
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) ;
-void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base);
+void arco_iris_dinamico(PIO pio, uint sm);
 void ligar_leds_verde(PIO pio, uint sm);
 void ligar_leds_branco(PIO pio, uint sm);
 void animacao_quadrado(PIO pio, uint sm) ;
 void piscar_X(PIO pio, uint sm);
-
+void xadrez(PIO pio, uint sm);
 
 void handle_key_press(char key) {
-    static float hue_base = 0.0; // Base para arco-íris
-
     switch (key) {
         case '0':
             //animação 1
@@ -98,10 +87,12 @@ void handle_key_press(char key) {
             break;
         case '6':
             printf("Iniciando arco-íris dinâmico...\n");
-            arco_iris_dinamico_iterativo(pio, sm, &hue_base);
-            break;
+            arco_iris_dinamico(pio, sm);
+        break;
         case '7':
             //animação 7
+         printf("Iniciando xadrez...\n");
+         xadrez(pio, sm);
             break;
         case '8':
             //animação 8
@@ -109,16 +100,16 @@ void handle_key_press(char key) {
         case '9':
             //animação 9
             break;
-
         case 'A':
            //Desligar todos os LEDs
             break;
         case 'B':
             //Ligar todos os LEDs na cor azul, 100% de intensidade
-            desenho_pio(LEDsAzul, pio, sm, 0.0, 0.0, 1.0);
             break;
         case 'C':
             //Ligar todos os LEDs na cor vermelha, 80% de intensidade
+             desenho_pio(ledsLIGADOS, pio, sm, 0.8, 0.0, 0.0); // LEDs vermelhos, 80%
+             printf("Todos os LEDs ligados na cor vermelha com 80%% de intensidade\n");
             break;
         case 'D':
             //Ligar todos os LEDs na cor verde, 50% de intensidade
@@ -227,25 +218,27 @@ void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
     }
 }
 
-void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
+void arco_iris_dinamico(PIO pio, uint sm) {
+    float hue_base = 0.0; // Matiz inicial
     float step = 1.0 / NUM_PIXELS; // Diferença de matiz entre os LEDs
 
+    while (true) {
+        for (int i = 0; i < NUM_PIXELS; i++) {
+            int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
+            float hue = fmod(hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
 
-    for (int i = 0; i < NUM_PIXELS; i++) {
-        int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
-        float hue = fmod(*hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
-        
-        // Converter HSV para RGB
-        float r, g, b;
-        hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
+            // Converter HSV para RGB
+            float r, g, b;
+            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
 
-        // Definir cor do LED
-        uint32_t cor = matrix_rgb(r, g, b);
-        pio_sm_put_blocking(pio, sm, cor);
+            // Definir cor do LED
+            uint32_t cor = matrix_rgb(r, g, b);
+            pio_sm_put_blocking(pio, sm, cor);
+        }
+
+        hue_base = fmod(hue_base + 0.01, 1.0); // Incrementar matiz base
+        sleep_ms(50); // Atraso para suavizar a transição
     }
-
-    *hue_base = fmod(*hue_base + 0.01, 1.0); // Incrementar matiz base
-
 }
 
 void ligar_leds_verde(PIO pio, uint sm) {
@@ -348,4 +341,81 @@ void piscar_X(PIO pio, uint sm) {
         desenho[i] = 0.0;
     }
     desenho_pio(desenho, pio, sm, 0.0, 0.0, 0.0); // Desliga os LEDs
+}
+
+void xadrez(PIO pio, uint sm) {
+    // Padrão inicial: todos os LEDs na cor vermelha
+    double vermelho[25] = {
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0
+    };
+
+    // Padrão alternado: todos os LEDs na cor branca
+    double branco[25] = {
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0,
+        1.0, 1.0, 1.0, 1.0, 1.0
+    };
+
+    printf("Iniciando animação de xadrez...\n");
+
+    char current_key = 0;
+    char last_key = '7'; // Assume que '7' é a tecla para iniciar a animação
+
+    while (true) {
+        // Verifica se outra tecla foi pressionada
+        current_key = scan_keypad();
+        if (current_key != 0 && current_key != last_key) {
+            printf("Tecla pressionada: %c. Encerrando animação.\n", current_key);
+            break; // Sai do loop ao detectar outra tecla
+        }
+
+        // Etapa 1: Alternar entre vermelho e branco
+        desenho_pio(vermelho, pio, sm, 1.0, 0.0, 0.0); // Vermelho
+        sleep_ms(200);
+        desenho_pio(branco, pio, sm, 1.0, 1.0, 1.0); // Branco
+        sleep_ms(200);
+
+        // Etapa 2: Piscar rapidamente
+        for (int i = 0; i < 5; i++) {
+            desenho_pio(vermelho, pio, sm, 1.0, 0.0, 0.0); // Vermelho
+            sleep_ms(100);
+            desenho_pio(branco, pio, sm, 1.0, 1.0, 1.0); // Branco
+            sleep_ms(100);
+        }
+
+        // Etapa 3: Alternância de padrões
+        double padrao1[25] = {
+            1.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 1.0
+        };
+
+        double padrao2[25] = {
+            0.0, 1.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0,
+            1.0, 0.0, 1.0, 0.0, 1.0,
+            0.0, 1.0, 0.0, 1.0, 0.0
+        };
+
+        for (int i = 0; i < 5; i++) {
+            desenho_pio((i % 2 == 0) ? padrao1 : padrao2, pio, sm, 1.0, 0.0, 0.0); // Vermelho
+            sleep_ms(200);
+            desenho_pio((i % 2 == 0) ? padrao1 : padrao2, pio, sm, 1.0, 1.0, 1.0); // Branco
+            sleep_ms(200);
+        }
+    }
+
+    // Finaliza apagando os LEDs
+    double apagar[25] = {0};
+    desenho_pio(apagar, pio, sm, 0.0, 0.0, 0.0);
+    printf("Animação de xadrez encerrada.\n");
 }
