@@ -55,7 +55,7 @@ pico_set_program_name(AtivMicroControladoresLEDs5x5 "AtivMicroControladoresLEDs5
 pico_set_program_version(AtivMicroControladoresLEDs5x5 "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(AtivMicroControladoresLEDs5x5 0)
+pico_enable_stdio_uart(AtivMicroControladoresLEDs5x5 1)
 pico_enable_stdio_usb(AtivMicroControladoresLEDs5x5 1)
 
 pico_generate_pio_header(AtivMicroControladoresLEDs5x5 ${CMAKE_CURRENT_LIST_DIR}/pio_matrix.pio)
