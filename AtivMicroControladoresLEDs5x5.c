@@ -287,7 +287,8 @@ void animacao1(){
     }
     desenho_pio(desenho6, pio, sm, 1.0, 0.0, 0.0);
     activate_buzzer(200, 300);
-    sleep_ms(700);
+    sleep_ms(900);
+    desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
 };
 // -- animação 2 -- Tecla 1 -- arco iris //
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
