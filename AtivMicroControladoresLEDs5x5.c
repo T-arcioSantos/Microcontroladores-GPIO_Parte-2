@@ -116,6 +116,7 @@ void animacao_quadrado(PIO pio, uint sm) ;
 void piscar_X(PIO pio, uint sm);
 void xadrez(PIO pio, uint sm);
 void animacao1();
+void animacao_diagonal(PIO pio, uint sm);
 
 // Função principal
 int main() {
@@ -170,13 +171,15 @@ void init_gpio() {
 void handle_key_press(char key) {
     switch (key) {
         case '0':
-            animacao1();//animação 1
+            animacao1(); //animação 1
             break;
         case '1':
             //animação 2
             break;
         case '2':
             //animação 3
+            printf("Iniciando animação diagonal...\n");
+            animacao_diagonal(pio, sm);
             break;
         case '3':
             //animação 4
@@ -514,3 +517,76 @@ void xadrez(PIO pio, uint sm) {
     desenho_pio(apagar, pio, sm, 0.0, 0.0, 0.0);
     printf("Animação de xadrez encerrada.\n");
 }
+
+// -- animação 3 -- Tecla 2 --  //
+// Frames da animação diagonal (mesmo padrão do HTML)
+double diagonal_frame0[25] = {
+    1.0,0.0,0.0,0.0,0.0,
+    0.0,1.0,0.0,0.0,0.0,
+    0.0,0.0,1.0,0.0,0.0,
+    0.0,0.0,0.0,1.0,0.0,
+    0.0,0.0,0.0,0.0,1.0
+};
+
+double diagonal_frame1[25] = {
+    0.0,1.0,0.0,0.0,0.0,
+    0.0,0.0,1.0,0.0,0.0,
+    0.0,0.0,0.0,1.0,0.0,
+    0.0,0.0,0.0,0.0,1.0,
+    1.0,0.0,0.0,0.0,0.0
+};
+
+double diagonal_frame2[25] = {
+    0.0,0.0,1.0,0.0,0.0,
+    0.0,0.0,0.0,1.0,0.0,
+    0.0,0.0,0.0,0.0,1.0,
+    1.0,0.0,0.0,0.0,0.0,
+    0.0,1.0,0.0,0.0,0.0
+};
+
+double diagonal_frame3[25] = {
+    0.0,0.0,0.0,1.0,0.0,
+    0.0,0.0,0.0,0.0,1.0,
+    1.0,0.0,0.0,0.0,0.0,
+    0.0,1.0,0.0,0.0,0.0,
+    0.0,0.0,1.0,0.0,0.0
+};
+
+double diagonal_frame4[25] = {
+    0.0,0.0,0.0,0.0,1.0,
+    1.0,0.0,0.0,0.0,0.0,
+    0.0,1.0,0.0,0.0,0.0,
+    0.0,0.0,1.0,0.0,0.0,
+    0.0,0.0,0.0,1.0,0.0
+};
+
+// -- animação 3 -- Tecla 2 -- Diagonal giratória (como no HTML) -- //
+void animacao_diagonal(PIO pio, uint sm) {
+    double *frames[] = {diagonal_frame0, diagonal_frame1, diagonal_frame2, diagonal_frame3, diagonal_frame4};
+    int num_frames = 5;
+    
+    printf("Iniciando animação diagonal...\n");
+    
+    char current_key;
+    char last_key = '2'; // Tecla que inicia a animação
+    int num_repeticoes = 3;
+
+    while (num_repeticoes > 0) {
+        printf("Repetições restantes: %d\n", num_repeticoes);
+        for (int j = 0; j < num_frames; j++) {
+            // Verifica se outra tecla foi pressionada
+            current_key = scan_keypad();
+            if (current_key != 0 && current_key != last_key) {
+                printf("Tecla pressionada: %c. Parando animação.\n", current_key);
+                desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+                return;
+            }
+            
+            // Atualiza os LEDs com o frame atual (cor roxa: R=1.0, G=0.0, B=1.0)
+            desenho_pio(frames[j], pio, sm, 1.0, 0.0, 1.0);
+            sleep_ms(500); // Atraso entre frames
+        }
+        num_repeticoes--;
+    }
+}
+
