@@ -350,23 +350,25 @@ void animacao_quadrado(PIO pio, uint sm) {
     printf("Executando animação de quadrado crescendo...\n");
 
     // Camadas do quadrado crescendo
-    int camadas[4][25] = {
+    int camadas[5][25] = {
         {12},                                  // Ponto central (primeiro frame)
         {6, 8, 12, 16, 18},                   // Segundo frame com "X"
         {0, 4, 20, 24, 2, 10, 14, 22, 6, 8, 16, 18, 12}, // Quadrado maior com "X"
-        {0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24} // Quadrado completo
+        {0, 1, 2, 3, 4, 5, 9, 10, 14, 15, 19, 20, 21, 22, 23, 24}, // Quadrado completo
+        {0, 4, 20, 24, 2, 10, 14, 22, 6, 8, 16, 18, 12} // Quadrado maior com "X" (repetição)
     };
 
     // Cores para cada camada (mudança de cor por frame)
-    float cores[4][3] = {
+    float cores[5][3] = {
         {1.0, 0.0, 0.0}, // Vermelho
         {0.0, 1.0, 0.0}, // Verde
         {0.0, 0.0, 1.0}, // Azul
-        {1.0, 1.0, 0.0}  // Amarelo
+        {1.0, 1.0, 0.0},  // Amarelo
+        {1.0, 0.0, 1.0}  // Magenta
     };
 
     // Executa cada frame
-    for (int frame = 0; frame < 4; frame++) {
+    for (int frame = 0; frame < 5; frame++) {
         // Desliga todos os LEDs antes de configurar o próximo frame
         for (int i = 0; i < NUM_PIXELS; i++) {
             pio_sm_put_blocking(pio, sm, 0x000000); // Envia o comando para desligar
