@@ -117,6 +117,7 @@ void piscar_X(PIO pio, uint sm);
 void xadrez(PIO pio, uint sm);
 void animacao1();
 void animacao_diagonal(PIO pio, uint sm);
+void animacao10(PIO pio, uint sm);
 
 // Função principal
 int main() {
@@ -206,7 +207,7 @@ void handle_key_press(char key) {
             //animação 9
             break;
         case '9':
-            //animação 10
+            animacao10(pio, sm);
             break;
         case 'A':
            //Desligar todos os LEDs
@@ -592,3 +593,132 @@ void animacao_diagonal(PIO pio, uint sm) {
     }
 }
 
+// Animacao 10 - Tecla 9 - Movimento cardinal com rebote//
+// Frames para animação 9 
+double anim10_frame0[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double anim10_frame1[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double anim10_frame2[25] = {
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double anim10_frame3[25] = {
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0
+};
+
+double anim10_frame4[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+double anim10_frame5[25] = {
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 1.0, 0.0
+};
+
+double anim10_frame6[25] = {
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0
+};
+
+double anim10_frame7[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+double anim10_frame8[25] = {
+    1.0, 0.0, 1.0, 0.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 1.0, 0.0, 1.0
+};
+
+// Array de frames e cores
+double* anim10_frames[] = {
+    anim10_frame0, anim10_frame1, anim10_frame2,
+    anim10_frame3, anim10_frame4, anim10_frame5,
+    anim10_frame6, anim10_frame7, anim10_frame8
+};
+
+float anim10_cores[9][3] = {
+    {0.5, 0.0, 0.5}, // Roxo (centro)
+    {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}, // Azul (cima)
+    {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}, // Azul (direita)
+    {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}, // Azul (baixo)
+    {0.0, 0.0, 1.0}, {0.0, 0.0, 1.0}  // Azul (esquerda)
+};
+
+
+void animacao10(PIO pio, uint sm) {
+    printf("Iniciando animação de movimento cardinal...\n");
+    
+    const int total_frames = 9;
+    int atual_frame = 0;
+    int direcao = 1; // 1 para frente, -1 para trás
+    char atual_key;
+
+    while(true) {
+        // Verificação de interrupção
+        atual_key = scan_keypad();
+        if(atual_key != 0 && atual_key != '9') {
+            printf("Tecla %c pressionada. Parando animação.\n", atual_key);
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+            return;
+        }
+
+        // Atualiza frame com cores
+        desenho_pio(
+            anim10_frames[atual_frame], 
+            pio, 
+            sm, 
+            anim10_cores[atual_frame][0],
+            anim10_cores[atual_frame][1],
+            anim10_cores[atual_frame][2]
+        );
+
+        // Controle de fluxo de frames
+        if(direcao == 1) {
+            if(atual_frame < total_frames-1) atual_frame++;
+            else direcao = -1;
+        } else {
+            if(atual_frame > 0) atual_frame--;
+            else direcao = 1;
+        }
+
+        sleep_ms(300); 
+    }
+}
