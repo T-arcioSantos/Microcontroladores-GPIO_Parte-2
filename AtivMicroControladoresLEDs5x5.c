@@ -10,8 +10,8 @@
 
 #define ROWS 4
 #define COLS 4
-uint8_t row_pins[ROWS] = {2, 3, 4, 5};  
-uint8_t col_pins[COLS] = {19, 18, 17, 16};  
+uint8_t row_pins[ROWS] = {16, 17, 18, 19};  
+uint8_t col_pins[COLS] = {20, 4, 9, 8};  
 
 
 #define BUZZER_PIN 21
