@@ -99,6 +99,7 @@ void handle_key_press(char key) {
         case '6':
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico_iterativo(pio, sm, &hue_base);
+            printf("Arco-íris dinâmico finalizado.\n");
             break;
         case '7':
             //animação 7
@@ -149,12 +150,12 @@ int main() {
     init_gpio();
     printf("Iniciando...\n");
 
-    char last_key = 0;
+    char last_key = 11;
 
     // Loop principal
     while (true) {
         char key = scan_keypad();
-        if (key != 0 && key != last_key) {
+        if (key != 11 && key != last_key) {
             printf("Tecla pressionada: %c\n", key);
             handle_key_press(key);
             last_key = key;
@@ -193,7 +194,7 @@ char scan_keypad() {
         }
         gpio_put(row_pins[row], 1); 
     }
-    return 0; 
+    return 11; 
 }
 
 // Função para definir a cor dos LEDs
@@ -229,8 +230,9 @@ void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
 
 void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
     float step = 1.0 / NUM_PIXELS; // Diferença de matiz entre os LEDs
+    int n = 200;
 
-
+    while(n-->0) {
     for (int i = 0; i < NUM_PIXELS; i++) {
         int posicao_fisica = mapa_leds[i]; // Obter posição física do LED
         float hue = fmod(*hue_base + i * step, 1.0); // Matiz do LED (0.0 a 1.0)
@@ -242,10 +244,17 @@ void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
         // Definir cor do LED
         uint32_t cor = matrix_rgb(r, g, b);
         pio_sm_put_blocking(pio, sm, cor);
+
+        //interromper a execução ao pressionar qualquer tecla diferente de 6
+        if (scan_keypad() != '6' && scan_keypad() != 11) {
+            return;
+            printf("Arco-íris interrompido.\n");
+        }
     }
 
     *hue_base = fmod(*hue_base + 0.01, 1.0); // Incrementar matiz base
-
+    sleep_ms(50); // Pequeno delay para suavizar a transição
+    }
 }
 
 void ligar_leds_verde(PIO pio, uint sm) {
