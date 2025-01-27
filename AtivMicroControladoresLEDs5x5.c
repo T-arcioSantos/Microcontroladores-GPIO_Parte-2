@@ -12,7 +12,7 @@
 #define COLS 4
 uint8_t row_pins[ROWS] = {16, 17, 18, 19};  
 uint8_t col_pins[COLS] = {20, 4, 9, 8};  
-
+  
 
 
 #define BUZZER_PIN 21
@@ -119,6 +119,8 @@ void xadrez(PIO pio, uint sm);
 void animacao1();
 void animacao_diagonal(PIO pio, uint sm);
 void animacao10(PIO pio, uint sm);
+void espiral_colorida(PIO pio, uint sm, float *hue_base);
+void explosao_radial(PIO pio, uint sm, float *hue_base);
 
 // Função principal
 int main() {
@@ -178,7 +180,10 @@ void handle_key_press(char key) {
             animacao1(); //animação 1
             break;
         case '1':
-            //animação 2
+           printf("Iniciando Espiral Colorida...\n");
+            espiral_colorida(pio, sm, &hue_base);
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+            printf("Espiral Colorida finalizada.\n");
             break;
         case '2':
             //animação 3
@@ -209,7 +214,9 @@ void handle_key_press(char key) {
          xadrez(pio, sm);
             break;
         case '8':
-            //animação 9
+            printf("Iniciando Explosão Radial...\n");
+            explosao_radial(pio, sm, &hue_base);
+            printf("Explosão Radial finalizada.\n");
             break;
         case '9':
             animacao10(pio, sm);
@@ -300,7 +307,56 @@ void animacao1(){
     desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
 };
 
-// -- animação 2 -- Tecla 1 -- arco iris //
+// -- animação 2 -- Tecla 1 -- Espiral Colorida //
+
+// Implementação da Espiral Colorida
+void espiral_colorida(PIO pio, uint sm, float *hue_base) {
+    int spiral_order[] = {12, 13, 18, 17, 16, 11, 6, 7, 8, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 0, 1, 2, 3, 4};
+    int num_leds_spiral = sizeof(spiral_order) / sizeof(spiral_order[0]);
+    float step = 0.05;
+    
+    // Frequências para escala pentatônica (C5, D5, E5, G5, A5)
+    float frequencies[] = {523.25, 587.33, 659.25, 783.99, 880.00};
+    int freq_index = 0;
+
+    while (true) {
+        uint32_t colors[NUM_PIXELS] = {0};
+        *hue_base += 0.01;
+        if (*hue_base >= 1.0) *hue_base -= 1.0;
+
+        // Atualiza cores e toca notas
+        for (int i = 0; i < num_leds_spiral; i++) {
+            int pos_logica = spiral_order[i];
+            int pos_fisica = mapa_leds[pos_logica];
+            float hue = fmod(*hue_base + i * step, 1.0);
+            float r, g, b;
+            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
+            colors[pos_fisica] = matrix_rgb(r, g, b);
+
+            // Toca nota para cada 5 LEDs (evita sobreposição)
+            if (i % 5 == 0) {
+                activate_buzzer(frequencies[freq_index % 5], 50);
+                freq_index++;
+            }
+        }
+
+        // Envia cores para os LEDs
+        for (int p = 0; p < NUM_PIXELS; p++) {
+            pio_sm_put_blocking(pio, sm, colors[p]);
+        }
+
+        // Verifica interrupção
+        if (scan_keypad() != '2' && scan_keypad() != 11) {
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+            activate_buzzer(0, 0); // Para o buzzer
+            return;
+        }
+
+        sleep_ms(50); // Mantém o timing da animação
+    }
+}
+
+
 void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
     int i = (int)(h * 6);
     float f = h * 6 - i;
@@ -604,6 +660,61 @@ void animacao_diagonal(PIO pio, uint sm) {
             sleep_ms(500); // Atraso entre frames
         }
         num_repeticoes--;
+    }
+}
+
+// -- animação 9 -- Tecla 8 -- Explosão Radial -- //
+void explosao_radial(PIO pio, uint sm, float *hue_base) {
+    int layer0[] = {12};
+    int layer1[] = {6, 7, 8, 11, 13, 16, 17, 18};
+    int layer2[] = {0,1,2,3,4,5,9,10,14,15,19,20,21,22,23,24};
+    int* layers[] = {layer0, layer1, layer2};
+    int layer_sizes[] = {1, 8, 16};
+    int num_layers = 3;
+
+    // Frequências para expansão (C4, E4, G4) e retração (G4, E4)
+    float freq_expand[] = {261.63, 329.63, 392.00};
+    float freq_retract[] = {392.00, 329.63};
+
+    while (true) {
+        // Expansão com sons ascendentes
+        for (int i = 0; i < num_layers; i++) {
+            double desenho[25] = {0.0};
+            for (int j = 0; j < layer_sizes[i]; j++) desenho[layers[i][j]] = 1.0;
+            
+            float hue = fmod(*hue_base + i * 0.3, 1.0);
+            float r, g, b;
+            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
+            desenho_pio(desenho, pio, sm, r, g, b);
+            
+            activate_buzzer(freq_expand[i], 200); // Som da camada
+            if (scan_keypad() != '5' && scan_keypad() != 11) {
+                desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+                activate_buzzer(0, 0);
+                return;
+            }
+        }
+
+        // Retração com sons descendentes
+        for (int i = num_layers - 2; i >= 0; i--) {
+            double desenho[25] = {0.0};
+            for (int j = 0; j < layer_sizes[i]; j++) desenho[layers[i][j]] = 1.0;
+            
+            float hue = fmod(*hue_base + i * 0.3, 1.0);
+            float r, g, b;
+            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
+            desenho_pio(desenho, pio, sm, r, g, b);
+            
+            activate_buzzer(freq_retract[i], 200); // Som da camada
+            if (scan_keypad() != '5' && scan_keypad() != 11) {
+                desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+                activate_buzzer(0, 0);
+                return;
+            }
+        }
+
+        *hue_base += 0.05;
+        if (*hue_base >= 1.0) *hue_base -= 1.0;
     }
 }
 
