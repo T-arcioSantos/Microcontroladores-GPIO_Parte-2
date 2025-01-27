@@ -22,7 +22,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 | Tecla | Ação                          | Cor/Efeito                 |
 |-------|-------------------------------|----------------------------|
 | 0     | Contagem regressiva + ❤️      | Vermelho + buzzer          |
-| 1     | Espiral colorida             | Multicorido + buzzer        |
+| 1     | Onda de Cores             | Multicorido + buzzer        |
 | 2     | Onda diagonal                | Roxo                       |
 | 3     | Quadrado em expansão         | Multicolorido              |
 | 4     | X piscante                   | Transição de cores         |
