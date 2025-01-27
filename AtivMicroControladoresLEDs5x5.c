@@ -199,6 +199,7 @@ void handle_key_press(char key) {
             //animação 7
             printf("Iniciando arco-íris dinâmico...\n");
             arco_iris_dinamico_iterativo(pio, sm, &hue_base);
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
             printf("Arco-íris dinâmico finalizado.\n");
             break;
         case '7':
@@ -336,10 +337,9 @@ void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
 
         //interromper a execução ao pressionar qualquer tecla diferente de 6
         if (scan_keypad() != '6' && scan_keypad() != 11) {
-            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
             return;
-            printf("Arco-íris interrompido.\n");
         }
+
     }
 
     *hue_base = fmod(*hue_base + 0.01, 1.0); // Incrementar matiz base
