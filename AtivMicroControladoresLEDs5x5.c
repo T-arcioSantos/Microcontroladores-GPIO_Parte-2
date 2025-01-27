@@ -188,12 +188,10 @@ void handle_key_press(char key) {
             break;
         case 'A':
             //Desligar todos os LEDs
-            printf("Desligando todos os LEDs...\n");
             desligar_leds(pio, sm);
             break;
         case 'B':
             //Ligar todos os LEDs na cor azul, 100% de intensidade
-            printf("Ligando todos os LEDs na cor azul (100%% de intensidade)...\n");
             ligar_leds_azul(pio, sm);
             break;
         case 'C':
@@ -203,12 +201,10 @@ void handle_key_press(char key) {
             break;
         case 'D':
             //Ligar todos os LEDs na cor verde, 50% de intensidade
-            printf("Ligando todos os LEDs na cor verde (50%% de intensidade)...\n");
             ligar_leds_verde(pio, sm);
             break;
         case '#':
             //Ligar todos os LEDs na cor branca, 20% de intensidade
-            printf("Ligando todos os LEDs na cor branca (20%% de intensidade)...\n");
             ligar_leds_branco(pio, sm);
             break;
         case '*':
@@ -438,8 +434,9 @@ void onda_de_cores(PIO pio, uint sm) {
     printf("Iniciando Onda de Cores (Tecla 1)\n");
     int frame = 0;
     int direcao = 1;
+    int num_repeticoes = 9;
 
-    while (true) {
+    while (num_repeticoes-- > 0) {
 
         if (scan_keypad() != '1' && scan_keypad() != 11) {
             desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
