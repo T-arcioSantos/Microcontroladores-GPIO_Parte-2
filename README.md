@@ -12,8 +12,8 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 ## 🛠 Hardware
 | Componente       | GPIO no Pico |
 |------------------|--------------|
-| Linhas do Teclado| 2, 3, 4, 5   |
-| Colunas do Teclado| 16, 17, 18, 19|
+| Linhas do Teclado| 16, 17, 18, 19 | 
+| Colunas do Teclado| 20, 4, 9, 8 |
 | Dados da Matriz LED| 7          |
 | Buzzer           | 21           |
 

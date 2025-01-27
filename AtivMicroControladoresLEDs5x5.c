@@ -14,6 +14,7 @@ uint8_t row_pins[ROWS] = {16, 17, 18, 19};
 uint8_t col_pins[COLS] = {20, 4, 9, 8};  
 
 
+
 #define BUZZER_PIN 21
 #define NUM_PIXELS 25
 #define OUT_PIN 7
