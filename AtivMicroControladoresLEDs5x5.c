@@ -49,58 +49,6 @@ double ledsLIGADOS[25] = {
 
 double ledsDesligados[25] = {0.0};
 
-// Números de 1 a 5
-double numero1[25] = {
-    0.0, 0.0, 1.0, 0.0, 0.0,
-    0.0, 1.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0, 0.0,
-    0.0, 0.0, 1.0, 0.0, 0.0,
-    0.0, 1.0, 1.0, 1.0, 0.0
-};
-
-double numero2[25] = {
-    0.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0, 0.0,
-    0.0, 1.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double numero3[25] = {
-    0.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 1.0, 1.0, 0.0
-};
-
-double numero4[25] = {
-    0.0, 0.0, 0.0, 1.0, 0.0,
-    0.0, 0.0, 1.0, 1.0, 0.0,
-    0.0, 1.0, 0.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    0.0, 0.0, 0.0, 1.0, 0.0
-};
-
-double numero5[25] = {
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 0.0
-};
-
-double desenho6[25] = { 
-    0.0, 1.0, 0.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    0.0, 1.0, 1.0, 1.0, 0.0,
-    0.0, 0.0, 1.0, 0.0, 0.0
-};
-
-// Array de ponteiros para os números
-double* numeros[] = {numero5, numero4, numero3, numero2, numero1};
-
 void init_gpio(void);
 char scan_keypad(void);
 uint32_t matrix_rgb(double r, double g, double b);
@@ -178,10 +126,13 @@ void handle_key_press(char key) {
     static float hue_base = 0.0; // Base para arco-íris
     switch (key) {
         case '0':
-            animacao1(); //animação 1
+            //animação 1
+            printf("Iniciando contagem regressiva e coração...\n");
+            animacao1(); 
             break;
         case '1':
             //animação 2
+            printf("Iniciando linha coluna colorida...\n");
             animacao2(pio, sm);
             break;
         case '2':
@@ -191,14 +142,17 @@ void handle_key_press(char key) {
             break;
         case '3':
             //animação 4
+            printf("Iniciando quadrado crescendo...\n");
             animacao_quadrado(pio, sm);
             break;            
         case '4':
             //animação 5
+            printf("Iniciando piscar X com 10 cores...\n");
             piscar_X(pio, sm);
             break;         
         case '5':
             //animação 6
+            printf("Iniciando espiral...\n");
             animacao6(pio, sm);
             break;
         case '6':
@@ -217,14 +171,18 @@ void handle_key_press(char key) {
             //animação 9
             break;
         case '9':
+            //animação 10
+            printf("Iniciando movimento cardinal...\n");
             animacao10(pio, sm);
             break;
         case 'A':
            //Desligar todos os LEDs
+           printf("Desligando todos os LEDs...\n");
             desligar_leds(pio, sm);
             break;
         case 'B':
             //Ligar todos os LEDs na cor azul, 100% de intensidade
+            printf("Ligando todos os LEDs na cor azul (100%% de intensidade)...\n");
             ligar_leds_azul(pio, sm);
             break;
         case 'C':
@@ -234,10 +192,12 @@ void handle_key_press(char key) {
             break;
         case 'D':
             //Ligar todos os LEDs na cor verde, 50% de intensidade
+            printf("Ligando todos os LEDs na cor verde (50%% de intensidade)...\n");
             ligar_leds_verde(pio, sm);
             break;
         case '#':
             //Ligar todos os LEDs na cor branca, 20% de intensidade
+            printf("Ligando todos os LEDs na cor branca (20%% de intensidade)...\n");
             ligar_leds_branco(pio, sm);
             break;
         case '*':
@@ -293,6 +253,57 @@ void activate_buzzer(uint32_t frequency, uint32_t duration_ms) {
 }
 
 // ANIMAÇÕES ////////////////////
+// Números de 1 a 5
+double numero1[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double numero2[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double numero3[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double numero4[25] = {
+    0.0, 0.0, 0.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 1.0, 0.0,
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 0.0, 0.0, 1.0, 0.0
+};
+
+double numero5[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double desenho6[25] = { 
+    0.0, 1.0, 0.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+// Array de ponteiros para os números
+double* numeros[] = {numero5, numero4, numero3, numero2, numero1};
 
 // -- animação 1 -- contagem regressiva e coração Tecla 0 -- //
 void animacao1(){
@@ -1160,3 +1171,4 @@ void animacao6(PIO pio, uint sm) {
         printf("Frames restantes: %d\n", num_frames);
     }
 }
+
