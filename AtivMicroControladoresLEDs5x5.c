@@ -118,6 +118,9 @@ void xadrez(PIO pio, uint sm);
 void animacao1();
 void animacao_diagonal(PIO pio, uint sm);
 void animacao10(PIO pio, uint sm);
+void animacao2(PIO pio, uint sm);
+void ligar_leds_azul(PIO pio, uint sm);
+void desligar_leds(PIO pio, uint sm);
 
 // Função principal
 int main() {
@@ -178,6 +181,7 @@ void handle_key_press(char key) {
             break;
         case '1':
             //animação 2
+            animacao2(pio, sm);
             break;
         case '2':
             //animação 3
@@ -215,9 +219,11 @@ void handle_key_press(char key) {
             break;
         case 'A':
            //Desligar todos os LEDs
+            desligar_leds(pio, sm);
             break;
         case 'B':
             //Ligar todos os LEDs na cor azul, 100% de intensidade
+            ligar_leds_azul(pio, sm);
             break;
         case 'C':
             //Ligar todos os LEDs na cor vermelha, 80% de intensidade
@@ -356,6 +362,16 @@ void ligar_leds_verde(PIO pio, uint sm) {
 void ligar_leds_branco(PIO pio, uint sm) {
     printf("Ligando todos os LEDs na cor branca (20%% de intensidade)...\n");
     desenho_pio(ledsLIGADOS, pio, sm, 0.2, 0.2, 0.2);
+}
+
+void ligar_leds_azul(PIO pio, uint sm) {
+    printf("Ligando todos os LEDs na cor azul (100%% de intensidade)...\n");
+    desenho_pio(ledsLIGADOS, pio, sm, 0.0, 0.0, 1.0);
+}
+
+void desligar_leds(PIO pio, uint sm) {
+    printf("Desligando todos os LEDs...\n");
+    desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
 }
 
 // -- animação 3 -- Tecla 3 -- quadrado crescendo //
@@ -535,7 +551,7 @@ void xadrez(PIO pio, uint sm) {
 }
 
 // -- animação 3 -- Tecla 2 --  //
-// Frames da animação diagonal (mesmo padrão do HTML)
+// Frames da animação diagonal 
 double diagonal_frame0[25] = {
     1.0,0.0,0.0,0.0,0.0,
     0.0,1.0,0.0,0.0,0.0,
@@ -738,3 +754,148 @@ void animacao10(PIO pio, uint sm) {
     }
 
 }
+
+//ANIMAÇÃO 2 - Tecla 1 -- linha - coluna
+
+double anim2_frame0[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim2_frame1[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim2_frame2[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim2_frame3[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim2_frame4[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim2_frame5[25] = {
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double anim2_frame6[25] = {
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0
+};
+
+double anim2_frame7[25] = {
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0
+};
+
+double anim2_frame8[25] = { 
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double anim2_frame9[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+// Array de frames e cores
+double* anim2_frames[] = {
+    anim2_frame0, anim2_frame1, anim2_frame2,
+    anim2_frame3, anim2_frame4, anim2_frame5,
+    anim2_frame6, anim2_frame7, anim2_frame8, 
+    anim2_frame9
+};
+
+float anim2_cores[10][3] = {
+    {0.5, 0.0, 0.5}, // Roxo (centro)
+    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, // Azul (cima)
+    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, // Azul (direita)
+    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, // Azul (baixo)
+    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, 
+    {0.5, 0.0, 0.5}  // Azul (esquerda)
+};
+
+
+void animacao2(PIO pio, uint sm) {
+    printf("Iniciando animação linha-coluna...\n");
+    
+    const int total_frames = 10;
+    int atual_frame = 0;
+    int direcao = 1; // 1 para frente, -1 para trás
+    char atual_key;
+    int num_frames = 45;
+
+    while(num_frames-- > 0) {
+        // Verificação de interrupção
+        atual_key = scan_keypad();
+        if(atual_key != 11 && atual_key != '1') {
+            printf("Tecla %c pressionada. Parando animação.\n", atual_key);
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+            return;
+        }
+
+        // Atualiza frame com cores
+        desenho_pio(
+            anim2_frames[atual_frame], 
+            pio, 
+            sm, 
+            anim2_cores[atual_frame][0],
+            anim2_cores[atual_frame][1],
+            anim2_cores[atual_frame][2]
+        );
+
+        // Controle de fluxo de frames
+        if(direcao == 1) {
+            if(atual_frame < total_frames-1) atual_frame++;
+            else direcao = -1;
+        } else {
+            if(atual_frame > 0) atual_frame--;
+            else direcao = 1;
+        }
+
+        sleep_ms(300); 
+        printf("Frame restantes: %d\n", num_frames);
+    }
+}
+
+// -- animação 6 -- Tecla 5 -- Espiral  //
+
