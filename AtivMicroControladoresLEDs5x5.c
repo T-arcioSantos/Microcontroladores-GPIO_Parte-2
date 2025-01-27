@@ -68,7 +68,7 @@ void animacao1();
 void animacao_diagonal(PIO pio, uint sm);
 void animacao10(PIO pio, uint sm);
 
-void espiral_colorida(PIO pio, uint sm, float *hue_base);
+void onda_de_cores(PIO pio, uint sm);
 void explosao_radial(PIO pio, uint sm, float *hue_base);
 void ligar_leds_azul(PIO pio, uint sm);
 void desligar_leds(PIO pio, uint sm);
@@ -134,10 +134,9 @@ void handle_key_press(char key) {
             animacao1(); 
             break;
         case '1':
-           printf("Iniciando Espiral Colorida...\n");
-            espiral_colorida(pio, sm, &hue_base);
-            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
-            printf("Espiral Colorida finalizada.\n");
+           printf("Onda de Cores \n");
+            onda_de_cores(pio, sm);
+            printf("Onda de Cores finalizada.\n");
             break;
         case '2':
             //animação 3
@@ -342,52 +341,121 @@ void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
     }
 }
 
-// -- animação 2 -- Tecla 1 -- Espiral Colorida //
+// -- animação 2 -- Tecla 1 -- Onda de Cores //
 
-// Implementação da Espiral Colorida
-void espiral_colorida(PIO pio, uint sm, float *hue_base) {
-    int spiral_order[] = {12, 13, 18, 17, 16, 11, 6, 7, 8, 9, 14, 19, 24, 23, 22, 21, 20, 15, 10, 5, 0, 1, 2, 3, 4};
-    int num_leds_spiral = sizeof(spiral_order) / sizeof(spiral_order[0]);
-    float step = 0.05;
+// Frames da Onda de Cores (expansão e contração) - Animação 2 Tecla 1 
+double onda_frame0[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double onda_frame1[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double onda_frame2[25] = {
+    0.0, 0.0, 1.0, 0.0, 0.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    0.0, 0.0, 1.0, 0.0, 0.0
+};
+
+double onda_frame3[25] = {
+    0.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    0.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double onda_frame4[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+// Frames de contração (cópias explícitas)
+double onda_frame5[25];
+double onda_frame6[25];
+double onda_frame7[25];
+double onda_frame8[25];
+double onda_frame9[25] = {0};
+
+// Array de frames
+double* onda_frames[] = {
+    onda_frame0, onda_frame1, onda_frame2,
+    onda_frame3, onda_frame4, onda_frame5,
+    onda_frame6, onda_frame7, onda_frame8, onda_frame9
+};
+
+// Inicializa frames de contração com memcpy
+void init_onda_frames() {
+    memcpy(onda_frame5, onda_frame3, sizeof(onda_frame3));
+    memcpy(onda_frame6, onda_frame2, sizeof(onda_frame2));
+    memcpy(onda_frame7, onda_frame1, sizeof(onda_frame1));
+    memcpy(onda_frame8, onda_frame0, sizeof(onda_frame0));
+}
+
+float onda_cores[10][3] = {
+    {0.5, 0.0, 0.5}, // Roxo
+    {0.3, 0.0, 0.7}, 
+    {0.1, 0.0, 0.9}, 
+    {0.0, 0.5, 1.0}, 
+    {0.0, 0.8, 1.0}, 
+    {0.0, 0.5, 1.0}, 
+    {0.1, 0.0, 0.9}, 
+    {0.3, 0.0, 0.7}, 
+    {0.5, 0.0, 0.5},
+    {0.0, 0.0, 0.0}  // Preto
+};
+
+uint32_t onda_frequencias[10] = {
+    200, 300, 400, 500, 600, 
+    500, 400, 300, 200, 0
+};
+
+void onda_de_cores(PIO pio, uint sm) {
+    init_onda_frames(); // Inicializa cópias dos frames
     
-    // Frequências para escala pentatônica (C5, D5, E5, G5, A5)
-    float frequencies[] = {523.25, 587.33, 659.25, 783.99, 880.00};
-    int freq_index = 0;
+    printf("Iniciando Onda de Cores (Tecla 1)\n");
+    int frame = 0;
+    int direcao = 1;
 
     while (true) {
-        uint32_t colors[NUM_PIXELS] = {0};
-        *hue_base += 0.01;
-        if (*hue_base >= 1.0) *hue_base -= 1.0;
-
-        // Atualiza cores e toca notas
-        for (int i = 0; i < num_leds_spiral; i++) {
-            int pos_logica = spiral_order[i];
-            int pos_fisica = mapa_leds[pos_logica];
-            float hue = fmod(*hue_base + i * step, 1.0);
-            float r, g, b;
-            hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
-            colors[pos_fisica] = matrix_rgb(r, g, b);
-
-            // Toca nota para cada 5 LEDs (evita sobreposição)
-            if (i % 5 == 0) {
-                activate_buzzer(frequencies[freq_index % 5], 50);
-                freq_index++;
-            }
-        }
-
-        // Envia cores para os LEDs
-        for (int p = 0; p < NUM_PIXELS; p++) {
-            pio_sm_put_blocking(pio, sm, colors[p]);
-        }
-
-        // Verifica interrupção
-        if (scan_keypad() != '2' && scan_keypad() != 11) {
+        if (scan_keypad() != '1' && scan_keypad() != 11) {
             desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
-            activate_buzzer(0, 0); // Para o buzzer
+            activate_buzzer(0, 0);
             return;
         }
 
-        sleep_ms(50); // Mantém o timing da animação
+        // Usa o frame atual do array
+        desenho_pio(
+            onda_frames[frame], 
+            pio, 
+            sm, 
+            onda_cores[frame][0],
+            onda_cores[frame][1],
+            onda_cores[frame][2]
+        );
+
+        // Toca o som correspondente
+        activate_buzzer(onda_frequencias[frame], 100);
+
+        // Atualiza frame
+        frame += direcao;
+        if (frame >= 9 || frame <= 0) direcao *= -1;
+
+        sleep_ms(150);
     }
 }
 
@@ -878,148 +946,6 @@ void animacao10(PIO pio, uint sm) {
         printf("Frame restantes: %d\n", num_frames);
     }
 
-}
-
-//ANIMAÇÃO 2 - Tecla 1 -- linha - coluna
-
-double anim2_frame0[25] = {
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double anim2_frame1[25] = {
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double anim2_frame2[25] = {
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double anim2_frame3[25] = {
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double anim2_frame4[25] = {
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0,
-    1.0, 1.0, 1.0, 1.0, 1.0
-};
-
-double anim2_frame5[25] = {
-    1.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 0.0,
-    1.0, 1.0, 1.0, 1.0, 0.0
-};
-
-double anim2_frame6[25] = {
-    1.0, 1.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 0.0, 0.0,
-    1.0, 1.0, 1.0, 0.0, 0.0
-};
-
-double anim2_frame7[25] = {
-    1.0, 1.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 0.0, 0.0, 0.0,
-    1.0, 1.0, 0.0, 0.0, 0.0
-};
-
-double anim2_frame8[25] = { 
-    1.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 0.0,
-    1.0, 0.0, 0.0, 0.0, 0.0
-};
-
-double anim2_frame9[25] = { 
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0,
-    0.0, 0.0, 0.0, 0.0, 0.0
-};
-
-// Array de frames e cores
-double* anim2_frames[] = {
-    anim2_frame0, anim2_frame1, anim2_frame2,
-    anim2_frame3, anim2_frame4, anim2_frame5,
-    anim2_frame6, anim2_frame7, anim2_frame8, 
-    anim2_frame9
-};
-
-float anim2_cores[10][3] = {
-    {0.5, 0.0, 0.5}, // Roxo (centro)
-    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, // Azul (cima)
-    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, // Azul (direita)
-    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, // Azul (baixo)
-    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, 
-    {0.5, 0.0, 0.5}  // Azul (esquerda)
-};
-
-
-void animacao2(PIO pio, uint sm) {
-    printf("Iniciando animação linha-coluna...\n");
-    
-    const int total_frames = 10;
-    int atual_frame = 0;
-    int direcao = 1; // 1 para frente, -1 para trás
-    char atual_key;
-    int num_frames = 45;
-
-    while(num_frames-- > 0) {
-        // Verificação de interrupção
-        atual_key = scan_keypad();
-        if(atual_key != 11 && atual_key != '1') {
-            printf("Tecla %c pressionada. Parando animação.\n", atual_key);
-            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
-            return;
-        }
-
-        // Atualiza frame com cores
-        desenho_pio(
-            anim2_frames[atual_frame], 
-            pio, 
-            sm, 
-            anim2_cores[atual_frame][0],
-            anim2_cores[atual_frame][1],
-            anim2_cores[atual_frame][2]
-        );
-
-        // Controle de fluxo de frames
-        if(direcao == 1) {
-            if(atual_frame < total_frames-1) atual_frame++;
-            else direcao = -1;
-        } else {
-            if(atual_frame > 0) atual_frame--;
-            else direcao = 1;
-        }
-
-        sleep_ms(300); 
-        printf("Frame restantes: %d\n", num_frames);
-    }
 }
 
 // -- animação 6 -- Tecla 5 -- Espiral  //
