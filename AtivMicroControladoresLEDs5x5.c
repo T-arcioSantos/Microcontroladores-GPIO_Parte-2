@@ -307,6 +307,24 @@ void animacao1(){
     desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
 };
 
+
+void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
+    int i = (int)(h * 6);
+    float f = h * 6 - i;
+    float p = v * (1 - s);
+    float q = v * (1 - f * s);
+    float t = v * (1 - (1 - f) * s);
+
+    switch (i % 6) {
+        case 0: *r = v; *g = t; *b = p; break;
+        case 1: *r = q; *g = v; *b = p; break;
+        case 2: *r = p; *g = v; *b = t; break;
+        case 3: *r = p; *g = q; *b = v; break;
+        case 4: *r = t; *g = p; *b = v; break;
+        case 5: *r = v; *g = p; *b = q; break;
+    }
+}
+
 // -- animação 2 -- Tecla 1 -- Espiral Colorida //
 
 // Implementação da Espiral Colorida
@@ -357,22 +375,6 @@ void espiral_colorida(PIO pio, uint sm, float *hue_base) {
 }
 
 
-void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
-    int i = (int)(h * 6);
-    float f = h * 6 - i;
-    float p = v * (1 - s);
-    float q = v * (1 - f * s);
-    float t = v * (1 - (1 - f) * s);
-
-    switch (i % 6) {
-        case 0: *r = v; *g = t; *b = p; break;
-        case 1: *r = q; *g = v; *b = p; break;
-        case 2: *r = p; *g = v; *b = t; break;
-        case 3: *r = p; *g = q; *b = v; break;
-        case 4: *r = t; *g = p; *b = v; break;
-        case 5: *r = v; *g = p; *b = q; break;
-    }
-}
 
 void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
     
