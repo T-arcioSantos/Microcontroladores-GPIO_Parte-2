@@ -1,6 +1,6 @@
 {
     "version": 1,
-    "author": "Tárcio Santos",
+    "author": "Subgrupo 2 Equipe 4",
     "editor": "wokwi",
     "parts": [
       {
@@ -148,14 +148,14 @@
       [ "rgb23:VSS", "gnd5:GND", "green", [ "v0" ] ],
       [ "rgb24:VSS", "gnd5:GND", "green", [ "v0" ] ],
       [ "rgb25:VSS", "gnd5:GND", "green", [ "v0" ] ],
-      [ "pico:GP2", "keypad1:R1", "gold", [ "h-19.2", "v-153.6", "h211.2" ] ],
-      [ "keypad1:R2", "pico:GP3", "gold", [ "v-9.6", "h-240.4", "v172.8" ] ],
-      [ "pico:GP4", "keypad1:R3", "gold", [ "h-48", "v-192", "h259.5" ] ],
-      [ "keypad1:R4", "pico:GP5", "gold", [ "v-28.8", "h-278.6", "v211.2" ] ],
-      [ "keypad1:C1", "pico:GP19", "blue", [ "v0" ] ],
-      [ "keypad1:C2", "pico:GP18", "blue", [ "v0" ] ],
-      [ "keypad1:C3", "pico:GP17", "blue", [ "v0" ] ],
-      [ "keypad1:C4", "pico:GP16", "blue", [ "v0" ] ],
+      [ "pico:GP16", "keypad1:R1", "cyan", [ "h125.11", "v-307.16" ] ],
+      [ "keypad1:R2", "pico:GP17", "cyan", [ "h-0.4", "v297.56" ] ],
+      [ "pico:GP18", "keypad1:R3", "cyan", [ "h144.31", "v-192", "h0.3" ] ],
+      [ "keypad1:R4", "pico:GP19", "cyan", [ "h-0.2", "v268.76" ] ],
+      [ "keypad1:C1", "pico:GP20", "blue", [ "v9.6", "h-48.1", "v249.6" ] ],
+      [ "keypad1:C2", "pico:GP4", "blue", [ "v19.2", "h-278.4", "v153.6" ] ],
+      [ "keypad1:C3", "pico:GP9", "blue", [ "v28.8", "h-268.95", "v201.6" ] ],
+      [ "keypad1:C4", "pico:GP8", "blue", [ "v38.4", "h-288.3", "v182.4" ] ],
       [ "pico:GND.6", "bz1:1", "black", [ "h0" ] ],
       [ "pico:GP21", "bz1:2", "red", [ "h0" ] ]
     ],
