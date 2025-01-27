@@ -140,21 +140,25 @@ void handle_key_press(char key) {
             //animação 3
             printf("Iniciando animação diagonal...\n");
             animacao_diagonal(pio, sm);
+            printf("Animação diagonal finalizada.\n");
             break;
         case '3':
             //animação 4
             printf("Iniciando quadrado crescendo...\n");
             animacao_quadrado(pio, sm);
+            printf("Quadrado crescendo finalizado.\n");
             break;            
         case '4':
             //animação 5
             printf("Iniciando piscar X com 10 cores...\n");
             piscar_X(pio, sm);
+            printf("Piscar X finalizado.\n");
             break;         
         case '5':
             //animação 6
             printf("Iniciando espiral...\n");
             animacao6(pio, sm);
+            printf("Espiral finalizado.\n");
             break;
         case '6':
             //animação 7
@@ -167,6 +171,7 @@ void handle_key_press(char key) {
             //animação 8
          printf("Iniciando xadrez...\n");
          xadrez(pio, sm);
+            printf("Xadrez finalizado.\n");
             break;
         case '8':
             //animação 9
@@ -175,10 +180,11 @@ void handle_key_press(char key) {
             //animação 10
             printf("Iniciando movimento cardinal...\n");
             animacao10(pio, sm);
+            printf("Movimento cardinal finalizado.\n");
             break;
         case 'A':
-           //Desligar todos os LEDs
-           printf("Desligando todos os LEDs...\n");
+            //Desligar todos os LEDs
+            printf("Desligando todos os LEDs...\n");
             desligar_leds(pio, sm);
             break;
         case 'B':
@@ -876,7 +882,7 @@ void animacao2(PIO pio, uint sm) {
     int atual_frame = 0;
     int direcao = 1; // 1 para frente, -1 para trás
     char atual_key;
-    int num_frames = 45;
+    int num_frames = 25;
 
     while(num_frames-- > 0) {
         // Verificação de interrupção
@@ -907,7 +913,7 @@ void animacao2(PIO pio, uint sm) {
         }
 
         sleep_ms(300); 
-        printf("Frame restantes: %d\n", num_frames);
+        printf("Frames restantes: %d\n", num_frames);
     }
 }
 
