@@ -142,21 +142,25 @@ void handle_key_press(char key) {
             //animação 3
             printf("Iniciando animação diagonal...\n");
             animacao_diagonal(pio, sm);
+            printf("Animação diagonal finalizada.\n");
             break;
         case '3':
             //animação 4
             printf("Iniciando quadrado crescendo...\n");
             animacao_quadrado(pio, sm);
+            printf("Quadrado crescendo finalizado.\n");
             break;            
         case '4':
             //animação 5
             printf("Iniciando piscar X com 10 cores...\n");
             piscar_X(pio, sm);
+            printf("Piscar X finalizado.\n");
             break;         
         case '5':
             //animação 6
             printf("Iniciando espiral...\n");
             animacao6(pio, sm);
+            printf("Espiral finalizado.\n");
             break;
         case '6':
             //animação 7
@@ -169,6 +173,7 @@ void handle_key_press(char key) {
             //animação 8
          printf("Iniciando xadrez...\n");
          xadrez(pio, sm);
+            printf("Xadrez finalizado.\n");
             break;
         case '8':
             printf("Iniciando Explosão Radial...\n");
@@ -179,10 +184,11 @@ void handle_key_press(char key) {
             //animação 10
             printf("Iniciando movimento cardinal...\n");
             animacao10(pio, sm);
+            printf("Movimento cardinal finalizado.\n");
             break;
         case 'A':
-           //Desligar todos os LEDs
-           printf("Desligando todos os LEDs...\n");
+            //Desligar todos os LEDs
+            printf("Desligando todos os LEDs...\n");
             desligar_leds(pio, sm);
             break;
         case 'B':
@@ -343,6 +349,7 @@ void hsv_to_rgb(float h, float s, float v, float *r, float *g, float *b) {
 
 // -- animação 2 -- Tecla 1 -- Onda de Cores //
 
+
 // Frames da Onda de Cores (expansão e contração) - Animação 2 Tecla 1 
 double onda_frame0[25] = {
     0.0, 0.0, 0.0, 0.0, 0.0,
@@ -391,6 +398,7 @@ double onda_frame7[25];
 double onda_frame8[25];
 double onda_frame9[25] = {0};
 
+
 // Array de frames
 double* onda_frames[] = {
     onda_frame0, onda_frame1, onda_frame2,
@@ -432,11 +440,13 @@ void onda_de_cores(PIO pio, uint sm) {
     int direcao = 1;
 
     while (true) {
+
         if (scan_keypad() != '1' && scan_keypad() != 11) {
             desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
             activate_buzzer(0, 0);
             return;
         }
+
 
         // Usa o frame atual do array
         desenho_pio(
@@ -456,6 +466,9 @@ void onda_de_cores(PIO pio, uint sm) {
         if (frame >= 9 || frame <= 0) direcao *= -1;
 
         sleep_ms(150);
+ // Mantém o timing da animação
+        printf("num_repeticoes: %d\n", num_repeticoes);
+
     }
 }
 
@@ -772,8 +785,9 @@ void explosao_radial(PIO pio, uint sm, float *hue_base) {
     // Frequências para expansão (C4, E4, G4) e retração (G4, E4)
     float freq_expand[] = {261.63, 329.63, 392.00};
     float freq_retract[] = {392.00, 329.63};
+    int num_repeticoes = 5;
 
-    while (true) {
+    while (num_repeticoes-- > 0) {
         // Expansão com sons ascendentes
         for (int i = 0; i < num_layers; i++) {
             double desenho[25] = {0.0};
@@ -784,7 +798,7 @@ void explosao_radial(PIO pio, uint sm, float *hue_base) {
             hsv_to_rgb(hue, 1.0, 1.0, &r, &g, &b);
             desenho_pio(desenho, pio, sm, r, g, b);
             
-            activate_buzzer(freq_expand[i], 200); // Som da camada
+            activate_buzzer(freq_expand[i], 100); // Som da camada
             if (scan_keypad() != '5' && scan_keypad() != 11) {
                 desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
                 activate_buzzer(0, 0);
@@ -812,6 +826,8 @@ void explosao_radial(PIO pio, uint sm, float *hue_base) {
 
         *hue_base += 0.05;
         if (*hue_base >= 1.0) *hue_base -= 1.0;
+
+        printf("num_repeticoes: %d\n", num_repeticoes);
     }
 }
 
@@ -947,6 +963,7 @@ void animacao10(PIO pio, uint sm) {
     }
 
 }
+
 
 // -- animação 6 -- Tecla 5 -- Espiral  //
 
