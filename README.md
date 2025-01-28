@@ -44,47 +44,68 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
    - Tecla: `0`  
    - Ação: Pressione uma vez e aguarde a sequência completa
 
-2. **Onda Diagonal Roxa**  
+2. **Onda de Cores com Buzzer**  
+   - Tecla: `1`  
+   - Operação: Pressione para iniciar, outra tecla para parar
+
+3. **Onda Diagonal Roxa**  
    - Tecla: `2`  
    - Como usar: Pressione para iniciar, qualquer tecla para parar
 
-3. **Quadrado Colorido Expansivo**  
+4. **Quadrado Colorido Expansivo**  
    - Tecla: `3`  
    - Comportamento: Executa 5 fases automaticamente (não interrompível)
 
-4. **X Piscante com Transições**  
+5. **X Piscante com Transições**  
    - Tecla: `4`  
    - Operação: Pressione para ciclo de 10 cores, outra tecla para parar
 
-5. **Arco-Íris Dinâmico**  
+6. **Espiral LED por LED Azul**  
+   - Tecla: `5`  
+   - Modo de uso: Pressione para iniciar, outra tecla para parar
+
+7. **Arco-Íris Dinâmico**  
    - Tecla: `6`  
    - Modo de uso: Toque para iniciar
 
-6. **Padrão Xadrez Interativo**  
+8. **Padrão Xadrez Interativo**  
    - Tecla: `7`  
    - Controle: Pressione para alternância rápida, toque novamente para parar
 
-7. **Movimento Cardinal Azul**  
+9. **Explosão Radial**  
+   - Tecla: `8`  
+   - Modo de uso: Pressione para iniciar, outra tecla para parar
+
+10. **Movimento Cardinal Azul**  
    - Tecla: `9`  
    - Funcionamento: Executa 3 ciclos completos automaticamente
 
-8. **LEDs Verdes Fixos**  
+11. **LEDs Desligados**  
+   - Tecla: `A`  
+   - Efeito: Toque único para ativar, outra tecla para desligar
+
+12 **LEDs Azuis Fixos - 100% Brilho**  
+   - Tecla: `B`  
+   - Efeito: Toque único para ativar, outra tecla para desligar
+
+13. **LEDs Vermelhos Fixos - 80% Brilho**  
+   - Tecla: `C`  
+   - Efeito: Toque único para ativar, outra tecla para desligar
+
+15. **LEDs Verdes Fixos - 50% Brilho**  
    - Tecla: `D`  
    - Efeito: Toque único para ativar, outra tecla para desligar
 
-9. **Branco Suave**  
+16. **Branco Suave - 20% Brilho**
    - Tecla: `#` (hashtag)  
    - Uso: Pressione para ativar, outra tecla para desativar
 
-10. **Vermelho Intenso**  
-    - Tecla: `C`  
-    - Ação: Pressione para ativar, outra tecla para desligar
-
-11. **Reinicialização Rápida**  
+19. **Reboot**  
     - Tecla: `*` (asterisco)  
-    - Importante: Pressione para reiniciar imediatamente (perde animações em curso)
+    - Ação: Pressione para reiniciar o dispositivo 
    
     --------------------------------------------------
-**Desenvolvedores** (5 componentes): Ariel Fernando, Danilo Lacerda, Hércules, Julio Junior e Tárcio Santos.
+**Desenvolvedores** (7 componentes): Ariel Fernando, Cíntia Conceição, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
 
-**Vídeo Ensaio**: [https://www.youtube.com/watch?v=rSyZr7ifXCo](https://youtu.be/rSyZr7ifXCo?si=3pNJb7xu7mzLXkn7)
+**Vídeo Ensaio Wokwi**: 
+**Vídeo Ensaio Placa Bitdoglab**: 
