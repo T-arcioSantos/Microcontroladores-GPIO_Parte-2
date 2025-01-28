@@ -62,7 +62,7 @@ void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base);
 void ligar_leds_verde(PIO pio, uint sm);
 void ligar_leds_branco(PIO pio, uint sm);
 void animacao_quadrado(PIO pio, uint sm) ;
-void piscar_X(PIO pio, uint sm);
+void escrever_nordeste(PIO pio, uint sm);
 void xadrez(PIO pio, uint sm);
 void animacao1();
 void animacao_diagonal(PIO pio, uint sm);
@@ -152,9 +152,9 @@ void handle_key_press(char key) {
             break;            
         case '4':
             //animação 5
-            printf("Iniciando piscar X com 10 cores...\n");
-            piscar_X(pio, sm);
-            printf("Piscar X finalizado.\n");
+            printf("Escrevendo a frase 'I S2 NORDESTE'...\n");
+            escrever_nordeste(pio, sm);
+            printf("Frase 'I S2 NORDESTE' finalizada.\n");
             break;         
         case '5':
             //animação 6
@@ -572,51 +572,81 @@ void animacao_quadrado(PIO pio, uint sm) {
     }
 }
 
-// -- animação 4 -- Tecla 4 -- piscar X //
-void piscar_X(PIO pio, uint sm) {
-    double desenho[25] = {0};
+// -- animação 4 -- Tecla 4 -- Frase "I S2 NORDESTE" //
 
-    // Definir o "X" nos LEDs
-    desenho[0] = desenho[4] = desenho[6] = desenho[8] = desenho[12] = desenho[16] = desenho[18] = desenho[20] = desenho[24] = 1.0;
+void escrever_nordeste(PIO pio, uint sm) {
+    double matriz[25] = {0}; 
+    float cor[3] = {1.0, 0.0, 0.0}; 
 
-    printf("Transição do X com 10 cores diferentes...\n");
-
-    float cores[10][3] = {
-        {1.0, 0.0, 0.0}, // Vermelho
-        {0.0, 1.0, 0.0}, // Verde
-        {0.0, 0.0, 1.0}, // Azul
-        {1.0, 1.0, 0.0}, // Amarelo
-        {1.0, 0.0, 1.0}, // Magenta
-        {0.0, 1.0, 1.0}, // Ciano
-        {1.0, 0.5, 0.0}, // Laranja
-        {0.5, 0.0, 0.5}, // Roxo
-        {0.5, 0.5, 0.5}, // Cinza
-        {1.0, 1.0, 1.0}  // Branco
+    double letras[10][25] = {
+        {1, 1, 1, 1, 1,
+         0, 0, 1, 0, 0,
+         0, 0, 1, 0, 0,
+         0, 0, 1, 0, 0,
+         1, 1, 1, 1, 1},
+        {0, 1, 0, 1, 0,
+         1, 1, 1, 1, 1,
+         1, 1, 1, 1, 1,
+         0, 1, 1, 1, 0,
+         0, 0, 1, 0, 0},
+        {1, 0, 0, 0, 1, 
+         1, 1, 0, 0, 1,
+         1, 0, 1, 0, 1,
+         1, 0, 0, 1, 1,
+         1, 0, 0, 0, 1},
+        {0, 1, 1, 1, 0, 
+         1, 0, 0, 0, 1,
+         1, 0, 0, 0, 1,
+         1, 0, 0, 0, 1,
+         0, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1,  
+         1, 0, 0, 0, 1,
+         1, 1, 1, 1, 0,
+         1, 0, 0, 1, 0,
+         1, 0, 0, 0, 1},
+        {1, 1, 1, 1, 0, 
+         1, 0, 0, 0, 1,
+         1, 0, 0, 0, 1,
+         1, 0, 0, 0, 1,
+         1, 1, 1, 1, 0},
+        {1, 1, 1, 1, 1, 
+         1, 0, 0, 0, 0,
+         1, 1, 1, 1, 1,
+         1, 0, 0, 0, 0,
+         1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1,  
+         1, 0, 0, 0, 0,
+         1, 1, 1, 1, 1,
+         0, 0, 0, 0, 1,
+         1, 1, 1, 1, 1},
+        {1, 1, 1, 1, 1, 
+         0, 0, 1, 0, 0,
+         0, 0, 1, 0, 0,
+         0, 0, 1, 0, 0,
+         0, 0, 1, 0, 0},
+        {1, 1, 1, 1, 1,  
+         1, 0, 0, 0, 0,
+         1, 1, 1, 1, 1,
+         1, 0, 0, 0, 0,
+         1, 1, 1, 1, 1}
     };
 
-    // Itera pelas cores, criando transições suaves
-    for (int frame = 0; frame < 10; frame++) {
-        float *cor_atual = cores[frame % 10]; // Cor inicial
-        float *cor_proxima = cores[(frame + 1) % 10]; // Próxima cor
-
-        // Transição suave entre as cores
-        for (float t = 0.0; t <= 1.0; t += 0.1) { // 10 passos para a transição
-            float r = cor_atual[0] * (1.0 - t) + cor_proxima[0] * t;
-            float g = cor_atual[1] * (1.0 - t) + cor_proxima[1] * t;
-            float b = cor_atual[2] * (1.0 - t) + cor_proxima[2] * t;
-
-            // Atualiza o desenho com as cores interpoladas
-            desenho_pio(desenho, pio, sm, r, g, b);
-            sleep_ms(50); // Pequeno delay para suavizar a transição
+    // Exibir cada letra por 2 segundos
+    for (int i = 0; i < 10; i++) {
+        for (int j = 0; j < 25; j++) {
+            matriz[j] = letras[i][j];
         }
+        desenho_pio(matriz, pio, sm, cor[0], cor[1], cor[2]);
+        sleep_ms(2000);
     }
 
-    // Apaga o "X" ao final
+    // Apaga a frase
     for (int i = 0; i < 25; i++) {
-        desenho[i] = 0.0;
+        matriz[i] = 0.0;
     }
-    desenho_pio(desenho, pio, sm, 0.0, 0.0, 0.0); // Desliga os LEDs
+    desenho_pio(matriz, pio, sm, 0.0, 0.0, 0.0);
 }
+
 
 // -- animação 8 -- Tecla 7 -- xadrez //
 void xadrez(PIO pio, uint sm) {
