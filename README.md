@@ -48,7 +48,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
    - Tecla: `1`  
    - Operação: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
-3. **Linhas e Colunas Coloridas** (Feito por Cítia Conceição)
+3. **Linhas e Colunas Coloridas** (Feito por Cíntia Conceição)
    - Tecla: `2`  
    - Como usar: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
