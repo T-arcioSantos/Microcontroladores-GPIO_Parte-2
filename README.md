@@ -21,11 +21,11 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 ## ⌨️ Mapeamento de Teclas
 | Tecla | Ação                          | Cor/Efeito                 |
 |-------|-------------------------------|----------------------------|
-| 0     | Contagem regressiva + ❤️      | Vermelho + buzzer          |
-| 1     | Onda de Cores             | Multicorido + buzzer        |
+| 0     | Contagem regressiva + ❤️     | Vermelho + buzzer          |
+| 1     | Onda de Cores                | Multicorido + buzzer        |
 | 2     | Onda diagonal                | Roxo                       |
 | 3     | Quadrado em expansão         | Multicolorido              |
-| 4     | X piscante                   | Transição de cores         |
+| 4     | I ❤️ NORDESTE                | Vermelho                   |
 | 5     | Espiral LED por LED          | Azul                       |
 | 6     | Arco-íris dinâmico           | 🌈                         |
 | 7     | Padrão xadrez                | Vermelho/sem cor           |
