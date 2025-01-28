@@ -42,67 +42,67 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 
 1. **Contagem Regressiva + Coração com buzzer**  
    - Tecla: `0`  
-   - Ação: Pressione uma vez e aguarde a sequência completa
+   - Ação: Clique uma vez e aguarde a sequência completa
 
 2. **Onda de Cores com Buzzer**  
    - Tecla: `1`  
-   - Operação: Pressione para iniciar, outra tecla para parar
+   - Operação: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
 3. **Onda Diagonal Roxa**  
    - Tecla: `2`  
-   - Como usar: Pressione para iniciar, qualquer tecla para parar
+   - Como usar: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
 4. **Quadrado Colorido Expansivo**  
    - Tecla: `3`  
    - Comportamento: Executa 5 fases automaticamente (não interrompível)
 
-5. **X Piscante com Transições**  
-   - Tecla: `4`  
-   - Operação: Pressione para ciclo de 10 cores, outra tecla para parar
+5. **I ❤️ NORDESTE**
+    - Tecla: `4`  
+    - Efeito: Clique para iniciar, espere a sequência completa
 
 6. **Espiral LED por LED Azul**  
    - Tecla: `5`  
-   - Modo de uso: Pressione para iniciar, outra tecla para parar
+   - Modo de uso: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
 7. **Arco-Íris Dinâmico**  
    - Tecla: `6`  
-   - Modo de uso: Toque para iniciar
+   - Modo de uso: Toque para iniciar, espere ou clique em outra tecla para parar
 
 8. **Padrão Xadrez Interativo**  
    - Tecla: `7`  
-   - Controle: Pressione para alternância rápida, toque novamente para parar
+   - Controle: Pressione para alternância rápida, espere a sequência completa
 
 9. **Explosão Radial**  
    - Tecla: `8`  
-   - Modo de uso: Pressione para iniciar, outra tecla para parar
+   - Modo de uso: Clique para iniciar, segure `A` para interromper
 
 10. **Movimento Cardinal Azul**  
-   - Tecla: `9`  
-   - Funcionamento: Executa 3 ciclos completos automaticamente
-
+    - Tecla: `9`  
+    - Funcionamento: Executa 3 ciclos completos automaticamente
+    - Modo de uso: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 11. **LEDs Desligados**  
-   - Tecla: `A`  
-   - Efeito: Toque único para ativar, outra tecla para desligar
+    - Tecla: `A`  
+    - Efeito: Toque único para ativar, outra tecla para desligar
 
-12 **LEDs Azuis Fixos - 100% Brilho**  
-   - Tecla: `B`  
-   - Efeito: Toque único para ativar, outra tecla para desligar
+12. **LEDs Azuis Fixos - 100% Brilho**
+    - Tecla: `B`  
+    - Efeito: Toque único para ativar, outra tecla para desligar
 
 13. **LEDs Vermelhos Fixos - 80% Brilho**  
-   - Tecla: `C`  
-   - Efeito: Toque único para ativar, outra tecla para desligar
+    - Tecla: `C`  
+    - Efeito: Toque único para ativar, outra tecla para desligar
 
 15. **LEDs Verdes Fixos - 50% Brilho**  
-   - Tecla: `D`  
-   - Efeito: Toque único para ativar, outra tecla para desligar
+    - Tecla: `D`  
+    - Efeito: Toque único para ativar, outra tecla para desligar
 
 16. **Branco Suave - 20% Brilho**
-   - Tecla: `#` (hashtag)  
-   - Uso: Pressione para ativar, outra tecla para desativar
+    - Tecla: `#` (hashtag)  
+    - Uso: Clique para ativar, outra tecla para desativar
 
 19. **Reboot**  
-   - Tecla: `*` (asterisco)  
-   - Ação: Pressione para reiniciar o dispositivo 
+    - Tecla: `*` (asterisco)  
+    - Ação: Clique para reiniciar o dispositivo 
    
    --------------------------------------------------
 **Desenvolvedores** (7 componentes): Ariel Fernando, Cíntia Conceição, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
