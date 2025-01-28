@@ -107,6 +107,6 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
    --------------------------------------------------
 **Desenvolvedores** (7 componentes): Ariel Fernando, Cíntia Conceição, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
 
-**Vídeo Ensaio Wokwi**: https://youtu.be/gh309kynuMw?si=Y12XKsJXp2-B0y3o
+**Vídeo Ensaio Wokwi**: https://youtu.be/0S10oCgTKjI
 
 **Vídeo Ensaio Placa Bitdoglab**: 
