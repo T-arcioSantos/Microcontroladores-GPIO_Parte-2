@@ -74,7 +74,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 
 9. **Explosão Radial**  
    - Tecla: `8`  
-   - Modo de uso: Clique para iniciar, segure `A` para interromper
+   - Modo de uso: Clique para iniciar, espere ou segure `A` para interromper
 
 10. **Movimento Cardinal Azul**  
     - Tecla: `9`  
@@ -105,8 +105,8 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
     - Ação: Clique para reiniciar o dispositivo 
    
    --------------------------------------------------
-**Desenvolvedores** (7 componentes): Ariel Fernando, Cíntia Conceição, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
+**Desenvolvedores** (6 componentes): Ariel Fernando, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
 
-**Vídeo Ensaio Wokwi**: 
+**Vídeo Ensaio Wokwi**: https://youtu.be/gh309kynuMw?si=Y12XKsJXp2-B0y3o
 
 **Vídeo Ensaio Placa Bitdoglab**: 
