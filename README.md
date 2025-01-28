@@ -23,7 +23,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
 |-------|-------------------------------|----------------------------|
 | 0     | Contagem regressiva + ❤️     | Vermelho + buzzer          |
 | 1     | Onda de Cores                | Multicorido + buzzer        |
-| 2     | Onda diagonal                | Roxo                       |
+| 2     | Linhas/colunas coloridas     | Multicolorido               |
 | 3     | Quadrado em expansão         | Multicolorido              |
 | 4     | I ❤️ NORDESTE                | Vermelho                   |
 | 5     | Espiral LED por LED          | Azul                       |
@@ -48,7 +48,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
    - Tecla: `1`  
    - Operação: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
-3. **Onda Diagonal Roxa**  
+3. **Linhas e Colunas Coloridas** (Feito por Cítia Conceição)
    - Tecla: `2`  
    - Como usar: Clique para iniciar, espere a sequência completa ou segure `A` para interromper
 
@@ -105,7 +105,7 @@ Projeto que integra um teclado matricial 4x4 a uma matriz LED RGB 5x5, com anima
     - Ação: Clique para reiniciar o dispositivo 
    
    --------------------------------------------------
-**Desenvolvedores** (6 componentes): Ariel Fernando, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
+**Desenvolvedores** (7 componentes): Ariel Fernando, Cíntia Conceição, Danilo Lacerda, Hércules, Julio Junior, Pedro Gabriel e Tárcio Santos.
 
 **Vídeo Ensaio Wokwi**: https://youtu.be/gh309kynuMw?si=Y12XKsJXp2-B0y3o
 

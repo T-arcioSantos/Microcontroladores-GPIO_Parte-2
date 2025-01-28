@@ -13,8 +13,6 @@
 uint8_t row_pins[ROWS] = {16, 17, 18, 19};  
 uint8_t col_pins[COLS] = {20, 4, 9, 8};  
   
-
-
 #define BUZZER_PIN 21
 #define NUM_PIXELS 25
 #define OUT_PIN 7
@@ -65,7 +63,7 @@ void animacao_quadrado(PIO pio, uint sm) ;
 void escrever_nordeste(PIO pio, uint sm);
 void xadrez(PIO pio, uint sm);
 void animacao1();
-void animacao_diagonal(PIO pio, uint sm);
+void animacao3(PIO pio, uint sm); // Feito por Cintia
 void animacao10(PIO pio, uint sm);
 
 void onda_de_cores(PIO pio, uint sm);
@@ -74,7 +72,6 @@ void ligar_leds_azul(PIO pio, uint sm);
 void desligar_leds(PIO pio, uint sm);
 void animacao6(PIO pio, uint sm);
 
-// Função principal
 int main() {
     sm = pio_claim_unused_sm(pio, true);
     offset = pio_add_program(pio, &pio_matrix_program);
@@ -140,9 +137,9 @@ void handle_key_press(char key) {
             break;
         case '2':
             //animação 3
-            printf("Iniciando animação diagonal...\n");
-            animacao_diagonal(pio, sm);
-            printf("Animação diagonal finalizada.\n");
+            printf("Iniciando linha coluna colorida...\n");
+            animacao3(pio, sm);
+            printf("Linha coluna colorida finalizada.\n");
             break;
         case '3':
             //animação 4
@@ -522,7 +519,7 @@ void desligar_leds(PIO pio, uint sm) {
     desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
 }
 
-// -- animação 3 -- Tecla 3 -- quadrado crescendo //
+// -- animação 4 -- Tecla 3 -- quadrado crescendo //
 void animacao_quadrado(PIO pio, uint sm) {
     double desenho[25] = {0};
     printf("Executando animação de quadrado crescendo...\n");
@@ -572,7 +569,7 @@ void animacao_quadrado(PIO pio, uint sm) {
     }
 }
 
-// -- animação 4 -- Tecla 4 -- Frase "I S2 NORDESTE" //
+// -- animação 5 -- Tecla 4 -- Frase "I S2 NORDESTE" //
 
 void escrever_nordeste(PIO pio, uint sm) {
     double matriz[25] = {0}; 
@@ -726,78 +723,6 @@ void xadrez(PIO pio, uint sm) {
     double apagar[25] = {0};
     desenho_pio(apagar, pio, sm, 0.0, 0.0, 0.0);
     printf("Animação de xadrez encerrada.\n");
-}
-
-// -- animação 3 -- Tecla 2 --  //
-// Frames da animação diagonal 
-double diagonal_frame0[25] = {
-    1.0,0.0,0.0,0.0,0.0,
-    0.0,1.0,0.0,0.0,0.0,
-    0.0,0.0,1.0,0.0,0.0,
-    0.0,0.0,0.0,1.0,0.0,
-    0.0,0.0,0.0,0.0,1.0
-};
-
-double diagonal_frame1[25] = {
-    0.0,1.0,0.0,0.0,0.0,
-    0.0,0.0,1.0,0.0,0.0,
-    0.0,0.0,0.0,1.0,0.0,
-    0.0,0.0,0.0,0.0,1.0,
-    1.0,0.0,0.0,0.0,0.0
-};
-
-double diagonal_frame2[25] = {
-    0.0,0.0,1.0,0.0,0.0,
-    0.0,0.0,0.0,1.0,0.0,
-    0.0,0.0,0.0,0.0,1.0,
-    1.0,0.0,0.0,0.0,0.0,
-    0.0,1.0,0.0,0.0,0.0
-};
-
-double diagonal_frame3[25] = {
-    0.0,0.0,0.0,1.0,0.0,
-    0.0,0.0,0.0,0.0,1.0,
-    1.0,0.0,0.0,0.0,0.0,
-    0.0,1.0,0.0,0.0,0.0,
-    0.0,0.0,1.0,0.0,0.0
-};
-
-double diagonal_frame4[25] = {
-    0.0,0.0,0.0,0.0,1.0,
-    1.0,0.0,0.0,0.0,0.0,
-    0.0,1.0,0.0,0.0,0.0,
-    0.0,0.0,1.0,0.0,0.0,
-    0.0,0.0,0.0,1.0,0.0
-};
-
-// -- animação 3 -- Tecla 2 -- Diagonal giratória -- //
-void animacao_diagonal(PIO pio, uint sm) {
-    double *frames[] = {diagonal_frame0, diagonal_frame1, diagonal_frame2, diagonal_frame3, diagonal_frame4};
-    int num_frames = 5;
-    
-    printf("Iniciando animação diagonal...\n");
-    
-    char current_key;
-    char last_key = '2'; // Tecla que inicia a animação
-    int num_repeticoes = 3;
-
-    while (num_repeticoes > 0) {
-        printf("Repetições restantes: %d\n", num_repeticoes);
-        for (int j = 0; j < num_frames; j++) {
-            // Verifica se outra tecla foi pressionada
-            current_key = scan_keypad();
-            if (current_key != 11 && current_key != last_key) {
-                printf("Tecla pressionada: %c. Parando animação.\n", current_key);
-                desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
-                return;
-            }
-            
-            // Atualiza os LEDs com o frame atual (cor roxa: R=1.0, G=0.0, B=1.0)
-            desenho_pio(frames[j], pio, sm, 1.0, 0.0, 1.0);
-            sleep_ms(500); // Atraso entre frames
-        }
-        num_repeticoes--;
-    }
 }
 
 // -- animação 9 -- Tecla 8 -- Explosão Radial -- //
@@ -1254,3 +1179,144 @@ void animacao6(PIO pio, uint sm) {
     }
 }
 
+//ANIMAÇÃO 3 - Tecla 1 -- linha - coluna
+
+double anim3_frame0[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim3_frame1[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim3_frame2[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim3_frame3[25] = {
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim3_frame4[25] = {
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0,
+    1.0, 1.0, 1.0, 1.0, 1.0
+};
+
+double anim3_frame5[25] = {
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0,
+    1.0, 1.0, 1.0, 1.0, 0.0
+};
+
+double anim3_frame6[25] = {
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0,
+    1.0, 1.0, 1.0, 0.0, 0.0
+};
+
+double anim3_frame7[25] = {
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0,
+    1.0, 1.0, 0.0, 0.0, 0.0
+};
+
+double anim3_frame8[25] = { 
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0,
+    1.0, 0.0, 0.0, 0.0, 0.0
+};
+
+double anim3_frame9[25] = { 
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0,
+    0.0, 0.0, 0.0, 0.0, 0.0
+};
+
+// Array de frames e cores
+double* anim3_frames[] = {
+    anim3_frame0, anim3_frame1, anim3_frame2,
+    anim3_frame3, anim3_frame4, anim3_frame5,
+    anim3_frame6, anim3_frame7, anim3_frame8, 
+    anim3_frame9
+};
+
+float anim3_cores[10][3] = {
+    {0.5, 0.0, 0.5}, // Roxo (centro)
+    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0}, 
+    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, 
+    {0.0, 0.0, 1.0}, {1.0, 0.0, 1.0},
+    {1.0, 0.0, 0.0}, {0.0, 1.0, 1.0}, 
+    {0.5, 0.0, 0.5} 
+};
+
+
+void animacao3(PIO pio, uint sm) {
+    printf("Iniciando animação linha-coluna...\n");
+    
+    const int total_frames = 10;
+    int atual_frame = 0;
+    int direcao = 1; // 1 para frente, -1 para trás
+    char atual_key;
+    int num_frames = 45;
+
+    while(num_frames-- > 0) {
+        // Verificação de interrupção
+        atual_key = scan_keypad();
+        if(atual_key != 11 && atual_key != '2') {
+            printf("Tecla %c pressionada. Parando animação.\n", atual_key);
+            desenho_pio(ledsDesligados, pio, sm, 0.0, 0.0, 0.0);
+            return;
+        }
+
+        // Atualiza frame com cores
+        desenho_pio(
+            anim3_frames[atual_frame], 
+            pio, 
+            sm, 
+            anim3_cores[atual_frame][0],
+            anim3_cores[atual_frame][1],
+            anim3_cores[atual_frame][2]
+        );
+
+        // Controle de fluxo de frames
+        if(direcao == 1) {
+            if(atual_frame < total_frames-1) atual_frame++;
+            else direcao = -1;
+        } else {
+            if(atual_frame > 0) atual_frame--;
+            else direcao = 1;
+        }
+
+        sleep_ms(300); 
+        printf("Frame restantes: %d\n", num_frames);
+    }
+}
