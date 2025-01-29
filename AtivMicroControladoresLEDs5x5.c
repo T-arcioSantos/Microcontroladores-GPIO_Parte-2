@@ -217,16 +217,21 @@ void handle_key_press(char key) {
 
 char scan_keypad() {
     for (int row = 0; row < ROWS; row++) {
-        gpio_put(row_pins[row], 0); 
+        gpio_put(row_pins[row], 0); // Ativa a linha atual (LOW)
+       
         for (int col = 0; col < COLS; col++) {
-            if (gpio_get(col_pins[col]) == 0) { 
-                gpio_put(row_pins[row], 1);
-                return keys[row][col]; 
+            printf("Varrendo coluna %d (GPIO%d)\n", col, col_pins[col]);
+            if (gpio_get(col_pins[col]) == 0) { // Verifica se a coluna está LOW
+               
+                gpio_put(row_pins[row], 1); // Desativa a linha antes de retornar
+                gpio_put(col_pins[col],1); // Desativa a coluna antes de retornar
+                return keys[row][col]; // Retorna a tecla pressionada
             }
         }
         gpio_put(row_pins[row], 1); 
+        // Desativa a linha após a varredura
     }
-    return 11; 
+    return 11; // Retorna 11 se nenhuma tecla for pressionada
 }
 
 // Função para definir a cor dos LEDs
