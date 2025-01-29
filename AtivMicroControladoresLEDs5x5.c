@@ -220,7 +220,7 @@ char scan_keypad() {
         gpio_put(row_pins[row], 0); // Ativa a linha atual (LOW)
        
         for (int col = 0; col < COLS; col++) {
-            printf("Varrendo coluna %d (GPIO%d)\n", col, col_pins[col]);
+            // printf("Varrendo coluna %d (GPIO%d)\n", col, col_pins[col]);
             if (gpio_get(col_pins[col]) == 0) { // Verifica se a coluna está LOW
                
                 gpio_put(row_pins[row], 1); // Desativa a linha antes de retornar
@@ -492,7 +492,8 @@ void arco_iris_dinamico_iterativo(PIO pio, uint sm, float *hue_base) {
         pio_sm_put_blocking(pio, sm, cor);
 
         //interromper a execução ao pressionar qualquer tecla diferente de 6
-        if (scan_keypad() != '6' && scan_keypad() != 11) {
+        char key = scan_keypad();
+        if ( key != '6' && key != 11) {
             return;
         }
 
@@ -1291,7 +1292,7 @@ void animacao3(PIO pio, uint sm) {
     int atual_frame = 0;
     int direcao = 1; // 1 para frente, -1 para trás
     char atual_key;
-    int num_frames = 45;
+    int num_frames = 25;
 
     while(num_frames-- > 0) {
         // Verificação de interrupção
